@@ -1,0 +1,6 @@
+{
+  "name": "Central Monitoring & Control Unit",
+  "description": "Central Monitoring and Control Unit Executive Dashboard for Abdulrahman Alhudairi (وحدة المراقبة والتحكم المركزي)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
