@@ -164,20 +164,27 @@ export function ZonesTable({
       } else if (kpiLower === "fluctuating") {
         result = result.filter(r => r.status_value.toLowerCase() === "fluctuating");
       } else if (kpiLower === "out_of_service" || kpiLower === "out of service") {
-        result = result.filter(r => r.status_value.toLowerCase() === "out_of_service");
-      } else if (kpiLower === "local_only" || kpiLower === "local only") {
+        result = result.filter(r => r.status_value.toLowerCase() === "out_of_service" || r.status_value.toLowerCase().includes("out"));
+      } else if (kpiLower === "local_only" || kpiLower === "local only" || kpiLower === "local_operation_only") {
         result = result.filter(r => r.control_value.toLowerCase().includes("local"));
       } else if (kpiLower === "central_only" || kpiLower === "central only") {
         result = result.filter(r => r.control_value.toLowerCase().includes("central") && !r.control_value.toLowerCase().includes("partial"));
       } else if (kpiLower === "dual" || kpiLower === "dual_mode") {
         result = result.filter(r => r.control_value.toLowerCase().includes("dual") || r.control_type_ar.includes("مزدوج"));
-      } else if (kpiLower === "legacy_system" || kpiLower === "legacy" || kpiLower === "legacy system") {
+      } else if (kpiLower === "monitoring_only") {
+        result = result.filter(r => r.control_value.toLowerCase().includes("monitoring only") || r.control_value.toLowerCase() === "monitoring_only");
+      } else if (kpiLower === "monitoring_control" || kpiLower === "monitoring & control" || kpiLower === "monitoring and control") {
+        result = result.filter(r => r.control_value.toLowerCase().includes("monitoring & control") || r.control_value.toLowerCase().includes("monitoring and control") || r.control_value.toLowerCase() === "monitoring_control");
+      } else if (kpiLower === "central_partial_local" || kpiLower === "central partial local") {
+        result = result.filter(r => r.control_value.toLowerCase().includes("partial") || r.control_type_ar.includes("جزئي"));
+      } else if (kpiLower === "legacy_system" || kpiLower === "legacy" || kpiLower === "legacy system" || kpiLower === "legacy_operation" || kpiLower === "legacy operation") {
         result = result.filter(r => 
           r.control_value.toLowerCase().includes("legacy") || 
           r.control_value.toLowerCase().includes("traditional") || 
-          r.control_type_ar.includes("تقليدي")
+          r.control_type_ar.includes("تقليدي") ||
+          r.control_type_ar.includes("النظام القديم")
         );
-      } else if (kpiLower === "major_issues" || kpiLower === "major issues") {
+      } else if (kpiLower === "major_issues" || kpiLower === "major issues" || kpiLower === "issues") {
         result = result.filter(r => r.health_score < 100 || r.severity === "high");
       }
     }
@@ -758,7 +765,7 @@ export function ZonesTable({
             className={`sticky top-0 z-20 select-none shadow-md rounded-t-[16px] overflow-hidden ${
               isDark 
                 ? "bg-gradient-to-r from-[#0F172A] to-[#111827] text-[#CBD5E1]" 
-                : "bg-[#F1F5F9] text-[#334155] border-b border-[#E2E8F0]"
+                : "bg-[#F8FAFC] text-[#0F172A] border-b border-[#E2E8F0]"
             }`}
             style={{ 
               height: "56px",
@@ -774,7 +781,7 @@ export function ZonesTable({
               <div 
                 onClick={() => handleSort("date")} 
                 className="flex items-center justify-center gap-1.5 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors text-center h-full rounded-tl-[16px] rtl:rounded-tr-[16px]"
-                style={{ fontSize: "13px", fontWeight: 600, color: isDark ? "#CBD5E1" : "#334155" }}
+                style={{ fontSize: "13px", fontWeight: 600, color: isDark ? "#CBD5E1" : "#0F172A" }}
               >
                 <span>{t.colDate}</span>
                 {getSortIcon("date")}
@@ -784,7 +791,7 @@ export function ZonesTable({
               <div 
                 onClick={() => handleSort("day")} 
                 className="flex items-center justify-center gap-1.5 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors text-center h-full"
-                style={{ fontSize: "13px", fontWeight: 600, color: isDark ? "#CBD5E1" : "#334155" }}
+                style={{ fontSize: "13px", fontWeight: 600, color: isDark ? "#CBD5E1" : "#0F172A" }}
               >
                 <span>{t.colDay}</span>
                 {getSortIcon("day")}
@@ -794,7 +801,7 @@ export function ZonesTable({
               <div 
                 onClick={() => handleSort("zone")} 
                 className="flex items-center justify-center gap-1.5 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors text-center h-full"
-                style={{ fontSize: "13px", fontWeight: 600, color: isDark ? "#CBD5E1" : "#334155" }}
+                style={{ fontSize: "13px", fontWeight: 600, color: isDark ? "#CBD5E1" : "#0F172A" }}
               >
                 <span>{t.colZone}</span>
                 {getSortIcon("zone")}
@@ -804,7 +811,7 @@ export function ZonesTable({
               <div 
                 onClick={() => handleSort("status")} 
                 className="flex items-center justify-center gap-1.5 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors text-center h-full"
-                style={{ fontSize: "13px", fontWeight: 600, color: isDark ? "#CBD5E1" : "#334155" }}
+                style={{ fontSize: "13px", fontWeight: 600, color: isDark ? "#CBD5E1" : "#0F172A" }}
               >
                 <span>{t.colStatus}</span>
                 {getSortIcon("status")}
@@ -814,7 +821,7 @@ export function ZonesTable({
               <div 
                 onClick={() => handleSort("control_type")} 
                 className="flex items-center justify-center gap-1.5 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors text-center h-full"
-                style={{ fontSize: "13px", fontWeight: 600, color: isDark ? "#CBD5E1" : "#334155" }}
+                style={{ fontSize: "13px", fontWeight: 600, color: isDark ? "#CBD5E1" : "#0F172A" }}
               >
                 <span>{t.colControl}</span>
                 {getSortIcon("control_type")}
@@ -824,7 +831,7 @@ export function ZonesTable({
               <div 
                 onClick={() => handleSort("health_score")} 
                 className="flex items-center justify-center gap-1.5 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors text-center h-full"
-                style={{ fontSize: "13px", fontWeight: 600, color: isDark ? "#CBD5E1" : "#334155" }}
+                style={{ fontSize: "13px", fontWeight: 600, color: isDark ? "#CBD5E1" : "#0F172A" }}
               >
                 <span>{t.colHealth}</span>
                 {getSortIcon("health_score")}
@@ -833,7 +840,7 @@ export function ZonesTable({
               {/* Column 7: Notes */}
               <div 
                 className="text-center flex items-center justify-center h-full rounded-tr-[16px] rtl:rounded-tl-[16px]"
-                style={{ fontSize: "13px", fontWeight: 600, color: isDark ? "#CBD5E1" : "#334155" }}
+                style={{ fontSize: "13px", fontWeight: 600, color: isDark ? "#CBD5E1" : "#0F172A" }}
               >
                 <span>{t.colNotes}</span>
               </div>
@@ -860,7 +867,7 @@ export function ZonesTable({
                 return (
                   <div 
                     key={row.id}
-                    className="px-6 items-center text-slate-850 dark:text-slate-100 hover:bg-slate-50/70 dark:hover:bg-white/[0.02] border-b border-slate-100 dark:border-white/[0.04] transition-colors duration-150 group"
+                    className="px-6 items-center text-[#1E293B] dark:text-slate-150 hover:bg-[#F1F5F9] dark:hover:bg-white/[0.02] border-b border-[#E2E8F0] dark:border-white/[0.04] transition-colors duration-150 group"
                     style={{ 
                       ...gridTemplateStyle,
                       height: "54px",

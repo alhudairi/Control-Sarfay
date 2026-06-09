@@ -20,6 +20,7 @@ interface ChartsProps {
   alerts?: Alert[];
   majorIssues?: MajorIssue[];
   viewMode?: "desktop" | "tablet" | "mobile";
+  activeKpiFilter?: string | null;
 }
 
 export function Charts({
@@ -32,19 +33,92 @@ export function Charts({
   alerts = [],
   majorIssues = [],
   viewMode = "desktop",
+  activeKpiFilter = null,
 }: ChartsProps) {
   // Constants & Translation keys
   const isRtl = lang === "ar";
+  const isDark = theme === "dark";
 
   const chartGridClass = 
     viewMode === "desktop"
-      ? "grid grid-cols-2 gap-6 w-full max-w-7xl mx-auto"
-      : viewMode === "tablet"
-      ? "grid grid-cols-2 gap-[18px] w-full max-w-7xl mx-auto"
-      : "grid grid-cols-1 gap-[14px] w-full max-w-7xl mx-auto";
+      ? "grid grid-cols-1 lg:grid-cols-2 gap-6 w-full max-w-full"
+      : "grid grid-cols-1 gap-5 w-full max-w-full";
 
-  // Re-map colors to exact bright operational console specifications
-  const mappedStatusDist = statusDistribution.map((item) => {
+  // Filter rows by activeKpiFilter if provided
+  let filteredRows = [...rows];
+  if (activeKpiFilter) {
+    const kpiLower = activeKpiFilter.toLowerCase();
+    if (kpiLower === "stable") {
+      filteredRows = filteredRows.filter(r => r.status_value.toLowerCase() === "stable");
+    } else if (kpiLower === "fluctuating") {
+      filteredRows = filteredRows.filter(r => r.status_value.toLowerCase() === "fluctuating");
+    } else if (kpiLower === "out_of_service" || kpiLower === "out of service") {
+      filteredRows = filteredRows.filter(r => r.status_value.toLowerCase() === "out_of_service" || r.status_value.toLowerCase().includes("out"));
+    } else if (kpiLower === "local_only" || kpiLower === "local only" || kpiLower === "local_operation_only") {
+      filteredRows = filteredRows.filter(r => r.control_value.toLowerCase().includes("local"));
+    } else if (kpiLower === "central_only" || kpiLower === "central only") {
+      filteredRows = filteredRows.filter(r => r.control_value.toLowerCase().includes("central") && !r.control_value.toLowerCase().includes("partial"));
+    } else if (kpiLower === "dual" || kpiLower === "dual_mode") {
+      filteredRows = filteredRows.filter(r => r.control_value.toLowerCase().includes("dual") || r.control_type_ar.includes("مزدوج"));
+    } else if (kpiLower === "monitoring_only") {
+      filteredRows = filteredRows.filter(r => r.control_value.toLowerCase().includes("monitoring only") || r.control_value.toLowerCase() === "monitoring_only");
+    } else if (kpiLower === "monitoring_control" || kpiLower === "monitoring & control" || kpiLower === "monitoring and control") {
+      filteredRows = filteredRows.filter(r => r.control_value.toLowerCase().includes("monitoring & control") || r.control_value.toLowerCase().includes("monitoring and control") || r.control_value.toLowerCase() === "monitoring_control");
+    } else if (kpiLower === "central_partial_local" || kpiLower === "central partial local") {
+      filteredRows = filteredRows.filter(r => r.control_value.toLowerCase().includes("partial") || r.control_type_ar.includes("جزئي"));
+    } else if (kpiLower === "legacy_system" || kpiLower === "legacy" || kpiLower === "legacy system" || kpiLower === "legacy_operation" || kpiLower === "legacy operation") {
+      filteredRows = filteredRows.filter(r => 
+        r.control_value.toLowerCase().includes("legacy") || 
+        r.control_value.toLowerCase().includes("traditional") || 
+        r.control_type_ar.includes("تقليدي") ||
+        r.control_type_ar.includes("النظام القديم")
+      );
+    } else if (kpiLower === "major_issues" || kpiLower === "major issues" || kpiLower === "issues") {
+      filteredRows = filteredRows.filter(r => r.health_score < 100 || r.severity === "high");
+    }
+  }
+
+  // Re-map statusDistribution dynamically if rows are available, otherwise fall back to prop
+  let finalStatusDist = [...statusDistribution];
+  if (rows && rows.length > 0) {
+    let stableCount = 0;
+    let fluctuatingCount = 0;
+    let outOfServiceCount = 0;
+
+    filteredRows.forEach((r) => {
+      const val = r.status_value.toLowerCase();
+      if (val === "stable") {
+        stableCount += 1;
+      } else if (val === "fluctuating") {
+        fluctuatingCount += 1;
+      } else if (val === "out_of_service" || val.includes("out")) {
+        outOfServiceCount += 1;
+      }
+    });
+
+    finalStatusDist = [
+      {
+        label_ar: "مستقر",
+        label_en: "Stable",
+        value: stableCount,
+        color: "#22C55E"
+      },
+      {
+        label_ar: "متذبذب",
+        label_en: "Fluctuating",
+        value: fluctuatingCount,
+        color: "#EAB308"
+      },
+      {
+        label_ar: "خارج الخدمة",
+        label_en: "Out of Service",
+        value: outOfServiceCount,
+        color: "#EF4444"
+      }
+    ];
+  }
+
+  const mappedStatusDist = finalStatusDist.map((item) => {
     let color = item.color;
     const l_en = item.label_en.toLowerCase();
     if (l_en.includes("stable")) color = "#22C55E";
@@ -99,7 +173,7 @@ export function Charts({
   // Aggregate values dynamically from rows (source of truth) if present, otherwise fallback to prop
   if (rows && rows.length > 0) {
     targetControlModes.forEach(t => t.value = 0);
-    rows.forEach((r) => {
+    filteredRows.forEach((r) => {
       const val = (r.control_value || "").toLowerCase();
       const ar = r.control_type_ar || "";
       
@@ -178,7 +252,6 @@ export function Charts({
   const [selectedIdx2, setSelectedIdx2] = useState<number | null>(null);
 
   // Math for central readings on Chart 1:
-  // We prioritize temporary hover; if none, check selected legend; if none, default to dominant (maximum value slice)
   const maxItem1 = activeStatusDist.length > 0 
     ? [...activeStatusDist].sort((a, b) => b.value - a.value)[0] 
     : null;
@@ -188,13 +261,6 @@ export function Charts({
   const activePercentage1 = totalSectors > 0 ? Math.round((activeValue1 / totalSectors) * 100) : 0;
   const activeLabel1 = activeItem1 ? (isRtl ? activeItem1.label_ar : activeItem1.label_en) : "";
   const activeColor1 = activeItem1 ? activeItem1.color : "#94A3B8";
-
-  // Math for central readings on Chart 2: (Always display the highest/dominant category)
-  const dominantItem2 = [...mappedControlDist].sort((a, b) => b.value - a.value)[0];
-  const dominantValue2 = dominantItem2 ? dominantItem2.value : 0;
-  const dominantPercentage2 = totalControlChannels > 0 ? Math.round((dominantValue2 / totalControlChannels) * 100) : 0;
-  const dominantLabel2 = dominantItem2 ? (isRtl ? dominantItem2.label_ar : dominantItem2.label_en) : "";
-  const dominantColor2 = dominantItem2 ? dominantItem2.color : "#94A3B8";
 
   // Math for interactive tooltip configurations
   const maxItem2 = activeControlDist.length > 0 
@@ -229,7 +295,6 @@ export function Charts({
     direction: isRtl ? "rtl" : "ltr" as const,
   };
 
-  // Emojis mapping for premium status lists
   const getStatusEmoji = (label: string) => {
     const l = label.toLowerCase();
     if (l.includes("stable") || l.includes("مستقر")) return "🟢";
@@ -246,50 +311,50 @@ export function Charts({
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between"
+        style={{ height: "520px" }}
+        className="p-6 bg-white dark:bg-slate-900 rounded-[20px] border border-slate-200 dark:border-slate-800 shadow-[0_8px_24px_rgba(15,23,42,0.08)] flex flex-col justify-between overflow-hidden"
       >
         {/* Header containing the Executive indicator */}
-        <div className="flex justify-between items-start border-b border-slate-105 dark:border-slate-800 pb-4 mb-4 text-start">
+        <div className="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 pb-4 mb-2 text-start shrink-0">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="p-1 px-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                 <CheckCircle2 className="w-4 h-4" />
               </span>
-              <h3 className="font-bold text-[#0F172A] dark:text-gray-100 text-sm">
+              <h3 className="font-extrabold text-[#0F172A] dark:text-gray-100 text-sm">
                 {t.title1}
               </h3>
             </div>
-            <p className="text-xs text-[#475569] dark:text-slate-500">
+            <p className="text-[11px] text-[#475569] dark:text-slate-500">
               {isRtl ? "مراقبة وتحليل كفاءة استقرار القطاعات" : "Critical analytics on telemetry and diagnostic states"}
             </p>
           </div>
 
           {/* Executive Indicator Bubble */}
-          <div className="flex items-center gap-2.5 px-3 py-1.5 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-xl shadow-2xs">
+          <div className="flex items-center gap-2.5 px-3 py-1 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-xl shadow-2xs">
             <div className="flex flex-col text-right rtl:text-left">
-              <span className="text-[10px] text-slate-400 dark:text-slate-500 font-extrabold uppercase tracking-wider">
+              <span className="text-[9px] text-slate-400 dark:text-slate-500 font-extrabold uppercase tracking-wider">
                 {t.indicator1}
               </span>
-              <span className="text-xs font-bold text-[#334155] dark:text-slate-400 font-mono">
-                Sectors Active
+              <span className="text-[10px] font-bold text-[#334155] dark:text-slate-400 font-mono leading-none mt-0.5">
+                Sectors
               </span>
             </div>
-            <span className="text-2xl font-black text-indigo-650 dark:text-indigo-400 font-mono">
+            <span className="text-xl font-black text-indigo-600 dark:text-indigo-400 font-mono">
               {totalSectors}
             </span>
           </div>
         </div>
 
-        {/* 70% Card occupancy Donut container */}
-        <div className="relative w-full h-[280px] flex items-center justify-center py-2">
-          
+        {/* 70% Height Donut Container */}
+        <div className="relative w-full h-[65%] flex items-center justify-center py-2 shrink-0">
           {/* Centered Premium readouts display block */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none z-10">
             <motion.span 
               key={activePercentage1}
               initial={{ scale: 0.9, opacity: 0.4 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="text-4xl font-extrabold font-mono tracking-tight" 
+              className="text-3xl font-black font-mono tracking-tight" 
               style={{ color: activeColor1 }}
             >
               {activePercentage1}%
@@ -298,11 +363,11 @@ export function Charts({
               key={activeLabel1}
               initial={{ opacity: 0.5 }}
               animate={{ opacity: 1 }}
-              className="text-[15px] font-bold text-slate-850 dark:text-gray-200 mt-0.5 tracking-tight"
+              className="text-[14px] font-bold text-slate-800 dark:text-gray-200 mt-0.5 tracking-tight"
             >
               {activeLabel1}
             </motion.span>
-            <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-semibold">
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 font-semibold">
               {isRtl 
                 ? `${activeValue1} من أصل ${totalSectors} قطاعات` 
                 : `${activeValue1} of ${totalSectors} zones`}
@@ -318,8 +383,8 @@ export function Charts({
                   data={activeStatusDist}
                   cx="50%"
                   cy="50%"
-                  innerRadius={72}
-                  outerRadius={102}
+                  innerRadius={68}
+                  outerRadius={96}
                   paddingAngle={3}
                   dataKey="value"
                   animationBegin={0}
@@ -355,7 +420,7 @@ export function Charts({
                           <span>{getStatusEmoji(label)}</span>
                           <span>{label}</span>
                         </div>
-                        <div className="font-semibold text-slate-500 dark:text-slate-450">
+                        <div className="font-semibold text-slate-500 dark:text-slate-400">
                           {value} {t.sectorsCount} ({percentSum}%)
                         </div>
                       </div>,
@@ -368,9 +433,9 @@ export function Charts({
           )}
         </div>
 
-        {/* Premium Interactive Legend Grid */}
-        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+        {/* 30% Height Interactive Legend Grid */}
+        <div className="h-[30%] border-t border-slate-100 dark:border-slate-800 pt-3 flex items-center shrink-0 w-full overflow-hidden">
+          <div className="grid grid-cols-3 gap-2.5 w-full">
             {mappedStatusDist.map((entry, idx) => {
               const activeIdx = activeStatusDist.findIndex(x => x.label_en === entry.label_en);
               const isSelected = selectedIdx1 === activeIdx && activeIdx !== -1;
@@ -391,10 +456,10 @@ export function Charts({
                     }
                   }}
                   onMouseLeave={() => setHoveredIdx1(null)}
-                  className={`flex items-center justify-between p-2.5 rounded-xl border transition-all cursor-pointer text-start w-full h-full ${
+                  className={`flex items-center justify-between p-2.5 rounded-xl border transition-all cursor-pointer text-start w-full ${
                     isSelected || isHovered
                       ? "bg-slate-50 border-slate-300 dark:bg-slate-800/50 dark:border-slate-600 text-slate-900 dark:text-white"
-                      : "bg-slate-50/50 border-slate-100 dark:bg-slate-950/20 dark:border-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:border-slate-200 dark:hover:border-slate-700 text-slate-600 dark:text-slate-400"
+                      : "bg-slate-50/40 border-slate-100 dark:bg-slate-950/20 dark:border-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:border-slate-200 text-slate-600 dark:text-slate-450"
                   }`}
                   style={{
                     boxShadow: isSelected || isHovered ? `0 4px 12px ${entry.color}15` : "none"
@@ -402,19 +467,19 @@ export function Charts({
                 >
                   <div className="flex items-center gap-2 min-w-0">
                     <span 
-                      className="w-2.5 h-2.5 rounded-full shrink-0 transition-transform duration-300" 
+                      className="w-2 h-2 rounded-full shrink-0 transition-transform duration-300" 
                       style={{ 
                         backgroundColor: entry.color,
                         transform: isSelected || isHovered ? "scale(1.2)" : "scale(1)",
-                        boxShadow: `0 0 6px ${entry.color}50`
+                        boxShadow: `0 0 5px ${entry.color}50`
                       }} 
                     />
-                    <span className="font-bold text-xs truncate">
+                    <span className="font-bold text-[10px] sm:text-xs truncate">
                       {lang === "ar" ? entry.label_ar : entry.label_en}
                     </span>
                   </div>
                   {entry.value > 0 && (
-                    <span className="text-xs font-mono font-bold text-slate-550 dark:text-slate-400 shrink-0">
+                    <span className="text-[10px] sm:text-xs font-mono font-bold text-slate-500 shrink-0">
                       {pct}%
                     </span>
                   )}
@@ -430,50 +495,50 @@ export function Charts({
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-        className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between"
+        style={{ height: "520px" }}
+        className="p-6 bg-white dark:bg-slate-900 rounded-[20px] border border-slate-200 dark:border-slate-800 shadow-[0_8px_24px_rgba(15,23,42,0.08)] flex flex-col justify-between overflow-hidden"
       >
         {/* Header containing the Executive indicator */}
-        <div className="flex justify-between items-start border-b border-slate-105 dark:border-slate-800 pb-4 mb-4 text-start">
+        <div className="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 pb-4 mb-2 text-start shrink-0">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="p-1 px-1.5 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                 <Sliders className="w-4 h-4" />
               </span>
-              <h3 className="font-bold text-[#0F172A] dark:text-gray-100 text-sm">
+              <h3 className="font-extrabold text-[#0F172A] dark:text-gray-100 text-sm">
                 {t.title2}
               </h3>
             </div>
-            <p className="text-xs text-[#475569] dark:text-slate-500">
+            <p className="text-[11px] text-[#475569] dark:text-slate-500">
               {isRtl ? "مستويات توزيع ونوع قنوات التحكم المتاحة" : "Active operational command pathways allocation map"}
             </p>
           </div>
 
           {/* Executive Indicator Bubble */}
-          <div className="flex items-center gap-2.5 px-3 py-1.5 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-xl shadow-2xs">
+          <div className="flex items-center gap-2.5 px-3 py-1 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-xl shadow-2xs">
             <div className="flex flex-col text-right rtl:text-left">
-              <span className="text-[10px] text-slate-400 dark:text-slate-500 font-extrabold uppercase tracking-wider">
+              <span className="text-[9px] text-slate-400 dark:text-slate-500 font-extrabold uppercase tracking-wider">
                 {t.indicator2}
               </span>
-              <span className="text-xs font-bold text-[#334155] dark:text-slate-400 font-mono">
+              <span className="text-[10px] font-bold text-[#334155] dark:text-slate-400 font-mono leading-none mt-0.5">
                 Channels
               </span>
             </div>
-            <span className="text-2xl font-black text-indigo-650 dark:text-indigo-400 font-mono">
+            <span className="text-xl font-black text-indigo-600 dark:text-indigo-400 font-mono">
               {totalControlChannels}
             </span>
           </div>
         </div>
 
-        {/* 70% Card occupancy Donut container */}
-        <div className="relative w-full h-[280px] flex items-center justify-center py-2">
-          
-          {/* Centered Premium readouts display block - Dynamic based on active slice/selection */}
+        {/* 70% Height Donut Container */}
+        <div className="relative w-full h-[65%] flex items-center justify-center py-2 shrink-0">
+          {/* Centered Premium readouts display block */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none z-10">
             <motion.span 
               key={activePercentage2}
               initial={{ scale: 0.9, opacity: 0.4 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="text-4xl font-extrabold font-mono tracking-tight" 
+              className="text-3xl font-black font-mono tracking-tight" 
               style={{ color: activeColor2 }}
             >
               {activePercentage2}%
@@ -482,11 +547,11 @@ export function Charts({
               key={activeLabel2}
               initial={{ opacity: 0.5 }}
               animate={{ opacity: 1 }}
-              className="text-[14px] font-bold text-slate-850 dark:text-gray-200 mt-0.5 max-w-[170px] truncate text-center leading-tight tracking-tight px-1 font-sans"
+              className="text-[13px] font-bold text-slate-800 dark:text-gray-200 mt-0.5 max-w-[170px] truncate text-center leading-tight tracking-tight px-1"
             >
               {activeLabel2}
             </motion.span>
-            <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-semibold font-sans">
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 font-semibold">
               {isRtl 
                 ? `${activeValue2} من ${totalControlChannels} قنوات` 
                 : `${activeValue2} of ${totalControlChannels} channels`}
@@ -502,8 +567,8 @@ export function Charts({
                   data={activeControlDist}
                   cx="50%"
                   cy="50%"
-                  innerRadius={72}
-                  outerRadius={102}
+                  innerRadius={68}
+                  outerRadius={96}
                   paddingAngle={3}
                   dataKey="value"
                   animationBegin={0}
@@ -539,9 +604,8 @@ export function Charts({
                           <span className="w-2 h-2 rounded-full" style={{ backgroundColor: props.payload.color }} />
                           <span>{label}</span>
                         </div>
-                        <div className="font-semibold text-slate-500 dark:text-slate-450">
-                          {value} {isRtl ? "قنوات" : "channels"}
-                          {value > 0 ? ` (${percentSum}%)` : ""}
+                        <div className="font-semibold text-slate-550 dark:text-slate-400">
+                          {value} {isRtl ? "قنوات" : "channels"} ({percentSum}%)
                         </div>
                       </div>,
                       null
@@ -553,15 +617,14 @@ export function Charts({
           )}
         </div>
 
-        {/* Premium Interactive Legend Grid */}
-        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-          <div className="grid grid-cols-1 sm:grid-cols-6 gap-2 px-1">
+        {/* 30% Height Interactive Legend Grid */}
+        <div className="h-[30%] border-t border-slate-100 dark:border-slate-800 pt-3 flex items-center shrink-0 w-full overflow-hidden">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 w-full">
             {mappedControlDist.map((entry, idx) => {
                const activeIdx = activeControlDist.findIndex(x => x.label_en === entry.label_en);
                const isSelected = selectedIdx2 === activeIdx && activeIdx !== -1;
                const isHovered = hoveredIdx2 === activeIdx && activeIdx !== -1;
                const pct = totalControlChannels > 0 ? Math.round((entry.value / totalControlChannels) * 100) : 0;
-               const colSpan = idx < 3 ? "sm:col-span-2" : "sm:col-span-3";
                
                return (
                  <button
@@ -577,10 +640,10 @@ export function Charts({
                      }
                    }}
                    onMouseLeave={() => setHoveredIdx2(null)}
-                   className={`${colSpan} flex items-center justify-between p-2.5 rounded-xl border transition-all cursor-pointer text-start font-sans w-full h-full ${
+                   className={`flex items-center justify-between p-2 rounded-xl border transition-all cursor-pointer text-start ${
                     isSelected || isHovered
                       ? "bg-slate-50 border-slate-300 dark:bg-slate-800/50 dark:border-slate-600 text-slate-900 dark:text-white"
-                      : "bg-slate-50/50 border-slate-100 dark:bg-slate-950/20 dark:border-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:border-slate-200 dark:hover:border-slate-700 text-slate-600 dark:text-slate-400"
+                      : "bg-slate-50/40 border-slate-100 dark:bg-slate-950/20 dark:border-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:border-slate-200 text-slate-650 dark:text-slate-450"
                   }`}
                   style={{
                     boxShadow: isSelected || isHovered ? `0 4px 12px ${entry.color}15` : "none"
@@ -588,19 +651,19 @@ export function Charts({
                 >
                   <div className="flex items-center gap-1.5 min-w-0 max-w-full">
                     <span 
-                      className="w-2.5 h-2.5 rounded-full shrink-0 transition-transform duration-300" 
+                      className="w-1.5 h-1.5 rounded-full shrink-0 transition-transform duration-300" 
                       style={{ 
                         backgroundColor: entry.color, 
                         transform: isSelected || isHovered ? 'scale(1.2)' : 'scale(1)',
-                        boxShadow: `0 0 5px ${entry.color}40`
+                        boxShadow: `0 0 4px ${entry.color}40`
                       }} 
                     />
-                    <span className="font-bold text-[11px] truncate leading-tight">
+                    <span className="font-bold text-[9px] sm:text-[10px] truncate leading-tight">
                       {lang === "ar" ? entry.label_ar : entry.label_en}
                     </span>
                   </div>
                   {entry.value > 0 && (
-                    <span className="text-[10px] font-mono font-bold text-slate-550 dark:text-slate-400 shrink-0 ml-1">
+                    <span className="text-[9px] sm:text-[10px] font-mono font-bold text-slate-500 shrink-0 ml-1">
                       {pct}%
                     </span>
                   )}

@@ -121,4 +121,6 @@ export interface ApiResponse {
   alerts: Alert[];
   major_issues: MajorIssue[];
   rows: Row[];
+  general_notes?: any[];
+  fluctuations?: any[];
 }
