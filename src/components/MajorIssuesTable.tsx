@@ -268,6 +268,22 @@ export function MajorIssuesTable({
     // Status mapping
     if (key === "status") {
       const cleanStat = textVal.toLowerCase();
+      if (textVal.includes("لم يعالج")) {
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/15 dark:text-rose-450 dark:border-rose-500/20">
+            <Clock className="w-3 h-3" />
+            {textVal}
+          </span>
+        );
+      }
+      if (textVal.includes("معالج")) {
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-450 dark:border-emerald-500/20">
+            <CheckCircle className="w-3 h-3" />
+            {textVal}
+          </span>
+        );
+      }
       if (cleanStat === "open" || cleanStat === "نشط" || cleanStat === "معلق") {
         return (
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/15 dark:text-amber-600 dark:border-amber-500/20">

@@ -148,6 +148,15 @@ export function MetricCard({
     }
   }
 
+  // Dynamic background color matching the table status styles
+  const cardBgColor = isDark
+    ? isActive
+      ? `${activeColor}1F` // ~12% opacity tint
+      : `${activeColor}0A` // ~4% opacity tint on dark mode background
+    : isActive
+      ? `${activeColor}1A` // ~10% opacity tint
+      : `${activeColor}06`; // ~2.5% opacity tint
+
   return (
     <motion.button
       onClick={onClick}
@@ -161,6 +170,7 @@ export function MetricCard({
         padding: "20px",
         borderWidth: "1px",
         borderColor: borderColorString,
+        backgroundColor: cardBgColor,
         boxShadow: isDark 
           ? "0 8px 24px rgba(0, 0, 0, 0.4)" 
           : "0 8px 24px rgba(15, 23, 42, 0.08)",
@@ -168,11 +178,11 @@ export function MetricCard({
       className={`relative overflow-hidden text-start transition-all cursor-pointer w-full flex flex-col justify-between select-none ${
         isDark 
           ? isActive 
-            ? "bg-slate-900 border-transparent" 
-            : "bg-slate-950 hover:bg-slate-900 border-transparent"
+            ? "border-transparent" 
+            : "border-transparent text-[#F8FAFC]"
           : isActive
-            ? "bg-[#FFFFFF] ring-2 ring-indigo-500/10"
-            : "bg-[#FFFFFF]"
+            ? "ring-2 ring-indigo-500/10 text-[#0F172A]"
+            : "text-[#1E293B]"
       }`}
     >
       {/* 1. Top row containing Icon & Title */}
