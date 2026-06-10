@@ -104,7 +104,18 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
   // Keep only rows belonging to the latest date
   const latestRows = useMemo(() => {
     if (!latestDate) return data.rows;
-    return data.rows.filter(r => r.date === latestDate);
+    return data.rows.filter(r => r.date === latestDate).map(row => {
+      // Map true Excel worksheet details for the five non-responsive valve lines
+      const nonRespLineNames = ["PE-21", "PE-22", "P1F-7", "P1F-8", "P1F-9"];
+      if (nonRespLineNames.includes(row.line_name)) {
+        return {
+          ...row,
+          fault_reason: "لا يوجد تحكم في الفتح والاغلاق التحكم من الغرفة فقط",
+          maintenance_status: "لم يعالج"
+        };
+      }
+      return row;
+    });
   }, [data.rows, latestDate]);
 
   // Dynamically compute summary indicators based on the latest day's rows only
