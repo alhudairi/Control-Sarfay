@@ -136,6 +136,7 @@ export interface IrrigationNetworkResponsePage {
     id: number;
     date: string;
     day_ar: string;
+    day_en?: string;
     line_name: string;
     line_size: string;
     zone: string;

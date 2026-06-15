@@ -63,6 +63,7 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
   const [selectedResponse, setSelectedResponse] = useState("all");
   const [selectedZone, setSelectedZone] = useState("all");
   const [selectedPeriod, setSelectedPeriod] = useState("all");
+  const [selectedDay, setSelectedDay] = useState("all");
 
   // Sorting
   const [sortField, setSortField] = useState<"line_name" | "zone" | "response_score">("line_name");
@@ -74,6 +75,7 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
     allZones: isRtl ? "جميع القطاعات" : "All Sectors",
     allReponses: isRtl ? "جميع مستويات الاستجابة" : "All Response Types",
     allPeriods: isRtl ? "جميع فترات التشغيل" : "All Program Runs",
+    allDays: isRtl ? "جميع الأيام" : "All Days",
     colDate: isRtl ? "التاريخ" : "Date",
     colDay: isRtl ? "اليوم" : "Day",
     colLineName: isRtl ? "اسم الخط" : "Line Name",
@@ -293,9 +295,18 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
         }
       }
 
-      return matchesSearch && matchesKpi && matchesResponse && matchesZone && matchesPeriod;
+      // Day filter
+      let matchesDay = true;
+      if (selectedDay !== "all") {
+        const rowDay = String(row.day_ar || "").trim();
+        const rowDayEn = String(row.day_en || "").toLowerCase().trim();
+        const sel = selectedDay.trim();
+        matchesDay = rowDay === sel || rowDay.includes(sel) || rowDayEn.includes(sel.toLowerCase());
+      }
+
+      return matchesSearch && matchesKpi && matchesResponse && matchesZone && matchesPeriod && matchesDay;
     });
-  }, [data.rows, searchQuery, activeKpiFilter, selectedResponse, selectedZone, selectedPeriod]);
+  }, [data.rows, searchQuery, activeKpiFilter, selectedResponse, selectedZone, selectedPeriod, selectedDay]);
 
   // Sort rows
   const sortedRows = useMemo(() => {
@@ -556,6 +567,21 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
               <option value="all">{t.allPeriods}</option>
               <option value="morning">{isRtl ? "فترة صباحية" : "Morning Run"}</option>
               <option value="evening">{isRtl ? "فترة مسائية" : "Evening Run"}</option>
+            </select>
+
+            <select
+              value={selectedDay}
+              onChange={(e) => setSelectedDay(e.target.value)}
+              className="px-3 py-1.5 bg-gray-50 dark:bg-gray-950 border border-gray-150 dark:border-indigo-900/60 text-xs font-bold rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer text-slate-700 dark:text-slate-200 transition-all border-indigo-100 bg-indigo-50/20 dark:bg-indigo-950/10 hover:bg-indigo-100/30"
+            >
+              <option value="all">{t.allDays}</option>
+              <option value="الأحد">{isRtl ? "الأحد" : "Sunday"}</option>
+              <option value="الاثنين">{isRtl ? "الاثنين" : "Monday"}</option>
+              <option value="الثلاثاء">{isRtl ? "الثلاثاء" : "Tuesday"}</option>
+              <option value="الأربعاء">{isRtl ? "الأربعاء" : "Wednesday"}</option>
+              <option value="الخميس">{isRtl ? "الخميس" : "Thursday"}</option>
+              <option value="الجمعة">{isRtl ? "الجمعة" : "Friday"}</option>
+              <option value="السبت">{isRtl ? "السبت" : "Saturday"}</option>
             </select>
 
             {activeKpiFilter && (
