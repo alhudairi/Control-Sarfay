@@ -50,7 +50,7 @@ export function ZonesTable({
 
   const gridTemplateStyle = {
     display: "grid",
-    gridTemplateColumns: "110px 90px 140px 130px 180px 140px minmax(200px, 1fr)",
+    gridTemplateColumns: "140px 90px 110px 130px 180px 140px minmax(200px, 1fr)",
     gap: "12px",
     alignItems: "center",
     width: "100%"
@@ -361,9 +361,9 @@ export function ZonesTable({
       const displayDate = row.date ? String(row.date).replace(/-/g, "/") : "";
       
       return {
-        [isRtl ? "التاريخ" : "Date"]: displayDate,
-        [isRtl ? "اليوم" : "Day"]: row.day_ar,
         [isRtl ? "النظام / القطاع" : "System / Zone"]: row.zone,
+        [isRtl ? "اليوم" : "Day"]: row.day_ar,
+        [isRtl ? "التاريخ" : "Date"]: displayDate,
         [isRtl ? "مؤشر الرصد" : "Telemetry State"]: bStyle.text.replace(/^[🟢🟡🔴]\s*/, ""),
         [isRtl ? "قناة التوجيه" : "Control Protocol"]: ctrlStyle.text,
         [isRtl ? "مستوى الاستجابة" : "Operating Efficiency"]: `${row.health_score}%`,
@@ -425,9 +425,9 @@ export function ZonesTable({
     doc.text("System Level: Command Operations Center (SOC)", 180, 53);
 
     const tableHeaders = [
-      "Date",
-      "Day",
       "System / Zone",
+      "Day",
+      "Date",
       "Telemetry State",
       "Control Protocol",
       "Efficiency",
@@ -463,9 +463,9 @@ export function ZonesTable({
       const statusEnText = bStyle.text.replace(/^[🟢🟡🔴]\s*/, "");
       
       return [
-        displayDate,
-        dayEn,
         `${zoneEn} (${row.zone})`,
+        dayEn,
+        displayDate,
         statusEnText,
         ctrlStyle.text,
         `${row.health_score}%`,
@@ -490,9 +490,9 @@ export function ZonesTable({
         valign: "middle"
       },
       columnStyles: {
-        0: { halign: "center", cellWidth: 22 },
+        0: { cellWidth: 45 },
         1: { halign: "center", cellWidth: 22 },
-        2: { cellWidth: 45 },
+        2: { halign: "center", cellWidth: 22 },
         3: { halign: "center", cellWidth: 32 },
         4: { halign: "center", cellWidth: 38 },
         5: { halign: "center", cellWidth: 22 },
@@ -777,14 +777,14 @@ export function ZonesTable({
               style={gridTemplateStyle}
             >
               
-              {/* Column 1: Date */}
+              {/* Column 3: Zone */}
               <div 
-                onClick={() => handleSort("date")} 
+                onClick={() => handleSort("zone")} 
                 className="flex items-center justify-center gap-1.5 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors text-center h-full rounded-tl-[16px] rtl:rounded-tr-[16px]"
                 style={{ fontSize: "13px", fontWeight: 600, color: isDark ? "#CBD5E1" : "#0F172A" }}
               >
-                <span>{t.colDate}</span>
-                {getSortIcon("date")}
+                <span>{t.colZone}</span>
+                {getSortIcon("zone")}
               </div>
 
               {/* Column 2: Day */}
@@ -797,14 +797,14 @@ export function ZonesTable({
                 {getSortIcon("day")}
               </div>
 
-              {/* Column 3: Zone */}
+              {/* Column 1: Date */}
               <div 
-                onClick={() => handleSort("zone")} 
+                onClick={() => handleSort("date")} 
                 className="flex items-center justify-center gap-1.5 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors text-center h-full"
                 style={{ fontSize: "13px", fontWeight: 600, color: isDark ? "#CBD5E1" : "#0F172A" }}
               >
-                <span>{t.colZone}</span>
-                {getSortIcon("zone")}
+                <span>{t.colDate}</span>
+                {getSortIcon("date")}
               </div>
 
               {/* Column 4: Status */}
@@ -876,10 +876,16 @@ export function ZonesTable({
                     }}
                   >
                     
-                    {/* Column 1: Date */}
-                    <div className="flex items-center justify-center text-center py-0.5 text-slate-600 dark:text-[#CBD5E1]">
-                      <span style={{ fontSize: "13px", fontWeight: 500 }}>
-                        {displayDate}
+                    {/* Column 3: Zone Name */}
+                    <div className="flex items-center justify-center text-center py-0.5">
+                      <span 
+                        className="group-hover:text-indigo-600 dark:group-hover:text-indigo-400 text-[#0f172a] dark:text-[#F8FAFC] transition-colors truncate block text-center"
+                        style={{ 
+                          fontSize: "15px", 
+                          fontWeight: 650
+                        }}
+                      >
+                        {row.zone}
                       </span>
                     </div>
 
@@ -893,16 +899,10 @@ export function ZonesTable({
                       </span>
                     </div>
 
-                    {/* Column 3: Zone Name */}
-                    <div className="flex items-center justify-center text-center py-0.5">
-                      <span 
-                        className="group-hover:text-indigo-600 dark:group-hover:text-indigo-400 text-[#0f172a] dark:text-[#F8FAFC] transition-colors truncate block text-center"
-                        style={{ 
-                          fontSize: "15px", 
-                          fontWeight: 650
-                        }}
-                      >
-                        {row.zone}
+                    {/* Column 1: Date */}
+                    <div className="flex items-center justify-center text-center py-0.5 text-slate-600 dark:text-[#CBD5E1]">
+                      <span style={{ fontSize: "13px", fontWeight: 500 }}>
+                        {displayDate}
                       </span>
                     </div>
 

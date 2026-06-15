@@ -75,6 +75,23 @@ export function PageSectorOperationMechanism({ data, lang, theme, viewMode }: Pa
     distTitle: isRtl ? "توزيع قنوات التحكم وآليات العمل" : "Control Distribution Framework"
   };
 
+  // Helper to obtain standardized mechanism values robustly
+  const getMechanismNormalized = (row: any): string => {
+    if (row.control_value) {
+      const cv = String(row.control_value).toUpperCase();
+      if (["LOCAL_OPERATION_ONLY", "MONITORING_ONLY", "MONITORING_AND_CONTROL", "CENTRAL_PARTIAL_LOCAL", "LEGACY_OPERATION"].includes(cv)) {
+        return cv;
+      }
+    }
+    const val = (row.control_type_ar || row.control_en || row["آلية التشغيل"] || row.control_type || "").toLowerCase();
+    if (val.includes("محلي") || val.includes("local")) return "LOCAL_OPERATION_ONLY";
+    if (val.includes("مراقبة وتحكم") || val.includes("monitoring & control") || val.includes("monitoring_and_control") || val.includes("كامل")) return "MONITORING_AND_CONTROL";
+    if (val.includes("مراقبة فقط") || val.includes("monitoring only") || val.includes("monitoring_only")) return "MONITORING_ONLY";
+    if (val.includes("مركزي") || val.includes("central")) return "CENTRAL_PARTIAL_LOCAL";
+    if (val.includes("قديم") || val.includes("legacy")) return "LEGACY_OPERATION";
+    return "LEGACY_OPERATION";
+  };
+
   // Find the latest registered date from rows
   const latestDate = useMemo(() => {
     if (!data.rows || data.rows.length === 0) return null;
@@ -94,30 +111,11 @@ export function PageSectorOperationMechanism({ data, lang, theme, viewMode }: Pa
   const computedSummary = useMemo(() => {
     const total = latestRows.length;
     
-    const local_only = latestRows.filter(r => {
-      const norm = (r.control_value || r.control_en || "").toLowerCase();
-      return norm.includes("local_only") || norm.includes("local operation only") || norm.includes("local_operation_only");
-    }).length;
-
-    const monitoring_only = latestRows.filter(r => {
-      const norm = (r.control_value || r.control_en || "").toLowerCase();
-      return norm.includes("monitoring_only") || norm.includes("monitoring only");
-    }).length;
-
-    const monitoring_and_control = latestRows.filter(r => {
-      const norm = (r.control_value || r.control_en || "").toLowerCase();
-      return norm.includes("monitoring_and_control") || norm.includes("monitoring & control") || norm.includes("monitoring_control");
-    }).length;
-
-    const legacy_operation = latestRows.filter(r => {
-      const norm = (r.control_value || r.control_en || "").toLowerCase();
-      return norm.includes("legacy_operation") || norm.includes("legacy operation") || norm.includes("legacy");
-    }).length;
-
-    const central_partial_local = latestRows.filter(r => {
-      const norm = (r.control_value || r.control_en || "").toLowerCase();
-      return norm.includes("central_partial") || norm.includes("partial");
-    }).length;
+    const local_only = latestRows.filter(r => getMechanismNormalized(r) === "LOCAL_OPERATION_ONLY").length;
+    const monitoring_only = latestRows.filter(r => getMechanismNormalized(r) === "MONITORING_ONLY").length;
+    const monitoring_and_control = latestRows.filter(r => getMechanismNormalized(r) === "MONITORING_AND_CONTROL").length;
+    const legacy_operation = latestRows.filter(r => getMechanismNormalized(r) === "LEGACY_OPERATION").length;
+    const central_partial_local = latestRows.filter(r => getMechanismNormalized(r) === "CENTRAL_PARTIAL_LOCAL").length;
 
     return {
       total_records: total,
@@ -177,14 +175,14 @@ export function PageSectorOperationMechanism({ data, lang, theme, viewMode }: Pa
 
   // Extract unique options
   const uniqueZones = useMemo(() => {
-    const list = latestRows.map(r => r.zone);
+    const list = (data.rows || []).map(r => r.zone);
     return Array.from(new Set(list)).sort();
-  }, [latestRows]);
+  }, [data.rows]);
 
   const uniqueMechanisms = useMemo(() => {
-    const list = latestRows.map(r => r.control_type_ar);
+    const list = (data.rows || []).map(r => r.control_type_ar);
     return Array.from(new Set(list));
-  }, [latestRows]);
+  }, [data.rows]);
 
   // Handle KPI interaction
   const handleKpiClick = (type: string | undefined) => {
@@ -195,9 +193,9 @@ export function PageSectorOperationMechanism({ data, lang, theme, viewMode }: Pa
     }
   };
 
-  // Filter rows
+  // Filter rows using all records to show full history
   const filteredRows = useMemo(() => {
-    return latestRows.filter(row => {
+    return (data.rows || []).filter(row => {
       // Search
       const matchesSearch = searchQuery === "" || 
         [row.date, row.day_ar, row.zone, row.control_type_ar, row.control_en, row.control_value, row.notes]
@@ -219,7 +217,7 @@ export function PageSectorOperationMechanism({ data, lang, theme, viewMode }: Pa
 
       return matchesSearch && matchesKpi && matchesMechanism && matchesZone;
     });
-  }, [latestRows, searchQuery, activeKpiFilter, selectedMechanism, selectedZone]);
+  }, [data.rows, searchQuery, activeKpiFilter, selectedMechanism, selectedZone]);
 
   // Sort rows
   const sortedRows = useMemo(() => {

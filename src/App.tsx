@@ -88,7 +88,7 @@ export default function App() {
     }
     setError(null);
     try {
-      const response = await fetch(DATA_URL);
+      const response = await fetch(`${DATA_URL}?_t=${Date.now()}`);
       if (!response.ok) {
         throw new Error(`HTTP error ${response.status}`);
       }
@@ -520,6 +520,7 @@ export default function App() {
                 {activeNavSection === "home" && (
                   <PageHome 
                     data={data.pages["الصفحة الرئيسية"] || data.pages.home || data.pages.home_page || data.pages["الصفحة_الرئيسية"]}
+                    fullData={data}
                     lang={lang}
                     theme={theme}
                     viewMode={viewMode}

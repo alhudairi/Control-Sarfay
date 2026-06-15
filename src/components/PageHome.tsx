@@ -35,12 +35,13 @@ import "jspdf-autotable";
 
 interface PageHomeProps {
   data: any; // Can be the "الصفحة الرئيسية" page object from API or fallback
+  fullData?: any; // The entire ApiResponse object
   lang: "ar" | "en";
   theme: "light" | "dark";
   viewMode: "desktop" | "tablet" | "mobile";
 }
 
-export function PageHome({ data, lang, theme, viewMode }: PageHomeProps) {
+export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProps) {
   const isRtl = lang === "ar";
   const isDark = theme === "dark";
 
@@ -165,23 +166,95 @@ export function PageHome({ data, lang, theme, viewMode }: PageHomeProps) {
 
   // Dynamically calculate KPIs based on latestRows of the home page
   const kpiCards = useMemo(() => {
-    const totalCount = latestRows.length;
-    
-    // Find count of stable ones
-    const stableCount = latestRows.filter((r: any) => {
-      const statusStr = (r["الحالة"] || r["status"] || "").toLowerCase();
-      return statusStr.includes("مستقر") || statusStr.includes("stable");
-    }).length;
+    // 1. Overall System Efficiency
+    let efficiencyVal = 86;
+    let stableCount = 6;
+    let totalCount = 7;
 
-    // Find count of out of service ones
-    const outOfServiceCount = latestRows.filter((r: any) => {
-      const statusStr = (r["الحالة"] || r["status"] || "").toLowerCase();
-      return statusStr.includes("خارج") || statusStr.includes("out") || statusStr.includes("تعطل");
-    }).length;
+    // Handle fullData for operational_efficiency dynamically
+    if (fullData?.pages?.operational_efficiency?.rows) {
+      const opRows = fullData.pages.operational_efficiency.rows;
+      if (opRows.length > 0) {
+        // Find latest date in opRows
+        const dates = opRows.map((r: any) => r.date || r["التاريخ"] || r.last_update || "").filter(Boolean);
+        if (dates.length > 0) {
+          dates.sort((a: any, b: any) => b.localeCompare(a));
+          const latestOpDate = dates[0];
+          const latestOpRows = opRows.filter((r: any) => (r.date || r["التاريخ"] || r.last_update || "") === latestOpDate);
+          totalCount = latestOpRows.length;
+          stableCount = latestOpRows.filter((r: any) => {
+            const statusStr = (r.status_ar || r.status_en || r.status_value || r["الحالة"] || "").toLowerCase();
+            return statusStr.includes("مستقر") || statusStr.includes("stable") || statusStr.includes("active") || statusStr.includes("green");
+          }).length;
+          efficiencyVal = totalCount > 0 ? Math.round((stableCount / totalCount) * 100) : 86;
+        }
+      }
+    } else {
+      // Fallback to local computation
+      const totalLocal = latestRows.length;
+      const stableLocal = latestRows.filter((r: any) => {
+        const statusStr = (r["الحالة"] || r["status"] || "").toLowerCase();
+        return statusStr.includes("مستقر") || statusStr.includes("stable");
+      }).length;
+      efficiencyVal = totalLocal > 0 ? Math.round((stableLocal / totalLocal) * 100) : 86;
+      stableCount = stableLocal;
+      totalCount = totalLocal;
+    }
 
-    const efficiencyVal = totalCount > 0 ? Math.round((stableCount / totalCount) * 100) : 86;
-    const activeSectorsCount = totalCount - outOfServiceCount;
+    // 2. Irrigation Response Rate
+    let irrResponseRate = 69;
+    if (fullData?.pages?.irrigation_network_response?.rows) {
+      const irrRows = fullData.pages.irrigation_network_response.rows;
+      if (irrRows.length > 0) {
+        // Find latest date in irrRows
+        const dates = irrRows.map((r: any) => r.date || r["التاريخ"] || r.last_update || "").filter(Boolean);
+        if (dates.length > 0) {
+          dates.sort((a: any, b: any) => b.localeCompare(a));
+          const latestIrrDate = dates[0];
+          const latestIrrRows = irrRows.filter((r: any) => (r.date || r["التاريخ"] || r.last_update || "") === latestIrrDate);
+          const totalValves = latestIrrRows.length;
+          const responsiveValves = latestIrrRows.filter((r: any) => {
+            const openResp = (r.open_response_ar || r.open_response_en || r.open_response_value || r["إستجابة الصمام لأمر الفتح"] || "").toLowerCase();
+            const closeResp = (r.close_response_ar || r.close_response_en || r.close_response_value || r["إستجابة الصمام لأمر الإغلاق"] || "").toLowerCase();
+            const isO = openResp.includes("يستجيب") || openResp.includes("responsive") || openResp === "yes";
+            const isC = closeResp.includes("يستجيب") || closeResp.includes("responsive") || closeResp === "yes";
+            return isO && isC;
+          }).length;
+          irrResponseRate = totalValves > 0 ? Math.round((responsiveValves / totalValves) * 100) : 69;
+        }
+      }
+    }
+
+    // 3. Sectors Online
+    const activeSectorsCount = stableCount;
     const sectorsPercentage = totalCount > 0 ? Math.round((activeSectorsCount / totalCount) * 100) : 86;
+
+    // 4. Open Issue Trackers (from general_notes)
+    let openIssueCount = 4;
+    if (fullData?.pages?.general_notes?.rows) {
+      const notesRows = fullData.pages.general_notes.rows;
+      if (notesRows.length > 0) {
+        const dates = notesRows.map((r: any) => r.last_update || r.date || r["التاريخ"] || "").filter(Boolean);
+        if (dates.length > 0) {
+          dates.sort((a: any, b: any) => b.localeCompare(a));
+          const latestNoteDate = dates[0];
+          const latestNoteRows = notesRows.filter((r: any) => (r.last_update || r.date || r["التاريخ"] || "") === latestNoteDate);
+          openIssueCount = latestNoteRows.filter((r: any) => {
+            const statusStr = (r.status || r["الحالة"] || "").toLowerCase();
+            return statusStr.includes("open") || statusStr.includes("لم يعالج") || statusStr.includes("مفتو") || statusStr.includes("نشط");
+          }).length;
+        }
+      }
+    } else {
+      // Fallback
+      if (latestRows.length > 0) {
+        const outOfServiceCount = latestRows.filter((r: any) => {
+          const statusStr = (r["الحالة"] || r["status"] || "").toLowerCase();
+          return statusStr.includes("خارج") || statusStr.includes("out") || statusStr.includes("تعطل");
+        }).length;
+        openIssueCount = outOfServiceCount;
+      }
+    }
 
     return [
       {
@@ -195,8 +268,8 @@ export function PageHome({ data, lang, theme, viewMode }: PageHomeProps) {
       {
         title_ar: "استجابة صمامات قنوات الري",
         title_en: "Irrigation Response Rate",
-        value: "69%", // Keeps consistent with network response average
-        percentage: 69,
+        value: `${irrResponseRate}%`,
+        percentage: irrResponseRate,
         color: "#EAB308",
         type: "response"
       },
@@ -211,13 +284,13 @@ export function PageHome({ data, lang, theme, viewMode }: PageHomeProps) {
       {
         title_ar: "بلاغات تحتاج دعم عاجل",
         title_en: "Open Issue Trackers",
-        value: `${outOfServiceCount}`,
-        percentage: Math.round((outOfServiceCount / (totalCount || 1)) * 100),
+        value: `${openIssueCount}`,
+        percentage: Math.round((openIssueCount / (totalCount || 1)) * 100),
         color: "#EF4444",
         type: "attention"
       }
     ];
-  }, [latestRows]);
+  }, [latestRows, fullData]);
 
   // Synthetic charts dataset based on overall performance overview
   const mainStatsDistribution = useMemo(() => {

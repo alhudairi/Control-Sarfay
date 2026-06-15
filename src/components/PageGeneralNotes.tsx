@@ -95,12 +95,12 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
     }
   };
 
-  // Filter rows
+  // Filter rows using all records to show full history
   const filteredRows = useMemo(() => {
-    return latestRows.filter(row => {
+    return (data.rows || []).filter(row => {
       // Search Box filter
       const matchesSearch = searchQuery === "" || 
-        [row.statement, row.sector_or_site, row.action, row.last_update, row.status, row.severity]
+        [row.statement, row.sector_or_site, row.action, (row.last_update || (row as any).date), row.status, row.severity]
           .some(field => (field || "").toString().toLowerCase().includes(searchQuery.toLowerCase()));
 
       // KPI filter (choices: open, resolved, high)
@@ -108,11 +108,11 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
       if (activeKpiFilter) {
         const norm = activeKpiFilter.toLowerCase();
         if (norm === "open") {
-          matchesKpi = row.status === "open";
+          matchesKpi = (row.status || "").toLowerCase().includes("open") || (row.status || "").includes("لم يعالج") || (row.status || "").includes("مفتو") || (row.status || "").includes("نشط");
         } else if (norm === "resolved") {
-          matchesKpi = row.status === "resolved";
+          matchesKpi = (row.status || "").toLowerCase().includes("resolved") || (row.status || "").includes("معالج") || (row.status || "").toLowerCase().includes("closed");
         } else if (norm === "high") {
-          matchesKpi = row.severity === "high";
+          matchesKpi = (row.severity || "").toLowerCase() === "high" || (row.severity || "").toLowerCase() === "عالية";
         }
       }
 
@@ -124,7 +124,7 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
 
       return matchesSearch && matchesKpi && matchesSeverity && matchesStatus;
     });
-  }, [latestRows, searchQuery, activeKpiFilter, selectedSeverity, selectedStatus]);
+  }, [data.rows, searchQuery, activeKpiFilter, selectedSeverity, selectedStatus]);
 
   // Sort rows
   const sortedRows = useMemo(() => {

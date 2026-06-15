@@ -69,6 +69,21 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
     healthLabel: isRtl ? "مؤشر الصحة (%)" : "Health Score (%)"
   };
 
+  // Helper to normalize and get status value robustly from live or mock row
+  const getStatusNormalized = (row: any): string => {
+    if (row.status_value) {
+      const sv = String(row.status_value).toLowerCase();
+      if (sv === "stable" || sv === "fluctuating" || sv === "out_of_service" || sv === "unknown") {
+        return sv;
+      }
+    }
+    const statusStr = (row.status_ar || row.status_en || row.status || row["الحالة"] || "").toLowerCase();
+    if (statusStr.includes("مستقر") || statusStr.includes("stable") || statusStr.includes("green")) return "stable";
+    if (statusStr.includes("متذبذب") || statusStr.includes("fluctuating") || statusStr.includes("yellow")) return "fluctuating";
+    if (statusStr.includes("خارج") || statusStr.includes("out") || statusStr.includes("تعطل") || statusStr.includes("red")) return "out_of_service";
+    return "unknown";
+  };
+
   // Find the latest registered date from rows
   const latestDate = useMemo(() => {
     if (!data.rows || data.rows.length === 0) return null;
@@ -87,10 +102,10 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
   // Dynamically compute summary indicators based on the latest day's rows only
   const computedSummary = useMemo(() => {
     const total = latestRows.length;
-    const stable = latestRows.filter(r => r.status_value === "stable").length;
-    const fluctuating = latestRows.filter(r => r.status_value === "fluctuating").length;
-    const outOfService = latestRows.filter(r => r.status_value === "out_of_service").length;
-    const unknown = latestRows.filter(r => r.status_value === "unknown").length;
+    const stable = latestRows.filter(r => getStatusNormalized(r) === "stable").length;
+    const fluctuating = latestRows.filter(r => getStatusNormalized(r) === "fluctuating").length;
+    const outOfService = latestRows.filter(r => getStatusNormalized(r) === "out_of_service").length;
+    const unknown = latestRows.filter(r => getStatusNormalized(r) === "unknown").length;
     
     const efficiency = total > 0 ? Math.round((stable / total) * 100) : 86;
     const risk = total > 0 ? Math.round(((outOfService + fluctuating) / total) * 100) : 14;
@@ -132,7 +147,7 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
     const zonesHealth = latestRows.map(r => ({
       zone: r.zone,
       health_score: r.health_score ?? 100,
-      status: isRtl ? r.status_ar : r.status_en,
+      status: isRtl ? (r.status_ar || "مستقر") : (r.status_en || "Stable"),
       color: r.color || "#22C55E",
       severity: r.severity || "low"
     }));
@@ -145,14 +160,14 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
 
   // Extract unique filter options
   const uniqueZones = useMemo(() => {
-    const list = latestRows.map(r => r.zone);
+    const list = (data.rows || []).map(r => r.zone);
     return Array.from(new Set(list)).sort();
-  }, [latestRows]);
+  }, [data.rows]);
 
   const uniqueStatuses = useMemo(() => {
-    const list = latestRows.map(r => r.status_value);
+    const list = (data.rows || []).map(r => getStatusNormalized(r));
     return Array.from(new Set(list));
-  }, [latestRows]);
+  }, [data.rows]);
 
   // Handle KPI click - filters table
   const handleKpiClick = (type: string | undefined) => {
@@ -163,9 +178,9 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
     }
   };
 
-  // Filter rows
+  // Filter rows using all records to show full history
   const filteredRows = useMemo(() => {
-    return latestRows.filter(row => {
+    return (data.rows || []).filter(row => {
       // Search Box filter (fields: date, day_ar, zone, status_ar, status_en, notes)
       const matchesSearch = searchQuery === "" || 
         [row.date, row.day_ar, row.zone, row.status_ar, row.status_en, row.notes]
@@ -174,18 +189,18 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
       // KPI card filter
       let matchesKpi = true;
       if (activeKpiFilter) {
-        matchesKpi = row.status_value.toLowerCase() === activeKpiFilter.toLowerCase();
+        matchesKpi = getStatusNormalized(row).toLowerCase() === activeKpiFilter.toLowerCase();
       }
 
       // Status dropdown filter
-      const matchesStatus = selectedStatus === "all" || row.status_value === selectedStatus;
+      const matchesStatus = selectedStatus === "all" || getStatusNormalized(row) === selectedStatus;
 
       // Sector dropdown filter
       const matchesZone = selectedZone === "all" || row.zone === selectedZone;
 
       return matchesSearch && matchesKpi && matchesStatus && matchesZone;
     });
-  }, [latestRows, searchQuery, activeKpiFilter, selectedStatus, selectedZone]);
+  }, [data.rows, searchQuery, activeKpiFilter, selectedStatus, selectedZone]);
 
   // Sort rows
   const sortedRows = useMemo(() => {
