@@ -136,26 +136,16 @@ export function MetricCard({
   
   // Custom border color
   let borderColorString = "#E2E8F0";
-  if (isDark) {
-    borderColorString = isActive ? activeColor : "rgba(255,255,255,0.08)";
+  if (isActive) {
+    borderColorString = activeColor;
+  } else if (isOutOfService) {
+    borderColorString = "#FCA5A5"; // Soft red border
   } else {
-    if (isActive) {
-      borderColorString = activeColor;
-    } else if (isOutOfService) {
-      borderColorString = "#FCA5A5"; // Soft red border
-    } else {
-      borderColorString = "#E2E8F0";
-    }
+    borderColorString = "#E2E8F0";
   }
 
-  // Dynamic background color matching the table status styles
-  const cardBgColor = isDark
-    ? isActive
-      ? `${activeColor}1F` // ~12% opacity tint
-      : `${activeColor}0A` // ~4% opacity tint on dark mode background
-    : isActive
-      ? `${activeColor}1A` // ~10% opacity tint
-      : `${activeColor}06`; // ~2.5% opacity tint
+  // Pure white background for Cards as requested
+  const cardBgColor = "#FFFFFF";
 
   return (
     <motion.button
@@ -166,23 +156,17 @@ export function MetricCard({
       animate={{ opacity: 1, y: 0 }}
       style={{
         height: "135px",
-        borderRadius: "20px",
+        borderRadius: "18px",
         padding: "20px",
-        borderWidth: "1px",
+        borderWidth: isActive ? "2px" : "1px",
         borderColor: borderColorString,
         backgroundColor: cardBgColor,
-        boxShadow: isDark 
-          ? "0 8px 24px rgba(0, 0, 0, 0.4)" 
-          : "0 8px 24px rgba(15, 23, 42, 0.08)",
+        boxShadow: "0 2px 8px rgba(15, 23, 42, 0.035)",
       }}
       className={`relative overflow-hidden text-start transition-all cursor-pointer w-full flex flex-col justify-between select-none ${
-        isDark 
-          ? isActive 
-            ? "border-transparent" 
-            : "border-transparent text-[#F8FAFC]"
-          : isActive
-            ? "ring-2 ring-indigo-500/10 text-[#0F172A]"
-            : "text-[#1E293B]"
+        isActive
+          ? "ring-2 ring-indigo-500/10 text-[#0F172A]"
+          : "text-[#1E293B]"
       }`}
     >
       {/* 1. Top row containing Icon & Title */}

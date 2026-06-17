@@ -289,7 +289,7 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
   return (
     <div className="space-y-6">
       {/* 1. Page Header Info Box */}
-      <div className="p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs font-semibold">
+      <div style={{ backgroundColor: "#E8E8E8" }} className="p-4 border border-gray-200 dark:border-gray-800 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs font-semibold">
         <div className="flex flex-col items-start gap-1">
           <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider block">
             {isRtl ? `البيانات الفنية الحالية لكفاءة نظام التشغيل لآخر يوم مسجل (${latestDate || "-"})` : `Operational Efficiency Telemetry for last registered day (${latestDate || "-"})`}
@@ -327,9 +327,9 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
       </div>
 
       {/* 3. Analytics Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div style={{ backgroundColor: "#E8E8E8" }} className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 rounded-2xl">
         {/* Chart A: Donut Status Distribution */}
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-850 p-5 rounded-2xl flex flex-col justify-between">
+        <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-200 dark:border-gray-850 p-5 rounded-2xl flex flex-col justify-between">
           <div className="text-start pb-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
             <div className="w-1.5 h-6 bg-indigo-600 rounded"></div>
             <h3 className="text-sm font-extrabold text-gray-900 dark:text-white">
@@ -385,7 +385,7 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
         </div>
 
         {/* Chart B: Horizontal Bar Chart - Zones Health Scores */}
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-850 p-5 rounded-2xl flex flex-col justify-between">
+        <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-200 dark:border-gray-850 p-5 rounded-2xl flex flex-col justify-between">
           <div className="text-start pb-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
             <div className="w-1.5 h-6 bg-indigo-600 rounded"></div>
             <h3 className="text-sm font-extrabold text-gray-900 dark:text-white">
@@ -424,9 +424,9 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
       </div>
 
       {/* 4. Table Controls and List */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-850 rounded-2xl overflow-hidden shadow-xs">
+      <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-200 dark:border-gray-850 rounded-2xl overflow-hidden shadow-xs">
         {/* Table Header Filter controls */}
-        <div className="p-5 border-b border-gray-100 dark:border-gray-800 flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
+        <div style={{ backgroundColor: "#E8E8E8" }} className="p-5 border-b border-gray-100 dark:border-gray-800 flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
           <div className="flex flex-wrap items-center gap-3 flex-1">
             {/* Search Input */}
             <div className="relative flex-1 min-w-[200px] max-w-sm">
@@ -436,7 +436,8 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
                 placeholder={t.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-xs font-semibold focus:outline-none focus:border-indigo-500 text-gray-800 dark:text-gray-100 placeholder-gray-450 dark:placeholder-gray-550 transition-colors"
+                style={{ backgroundColor: "#f9fafb" }}
+                className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 border border-gray-200 dark:border-gray-800 rounded-lg text-xs font-semibold focus:outline-none focus:border-indigo-500 text-gray-850 dark:text-gray-900 placeholder-gray-450 dark:placeholder-gray-550 transition-colors"
               />
             </div>
 
@@ -444,7 +445,8 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="px-3 py-1.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors"
+              style={{ backgroundColor: "#f9fafb" }}
+              className="px-3 py-1.5 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-800 transition-colors"
             >
               <option value="all">{t.allStatuses}</option>
               {uniqueStatuses.map((st, i) => (
@@ -458,7 +460,8 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
             <select
               value={selectedZone}
               onChange={(e) => setSelectedZone(e.target.value)}
-              className="px-3 py-1.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors"
+              style={{ backgroundColor: "#f9fafb" }}
+              className="px-3 py-1.5 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-800 transition-colors"
             >
               <option value="all">{t.allZones}</option>
               {uniqueZones.map((z, i) => (

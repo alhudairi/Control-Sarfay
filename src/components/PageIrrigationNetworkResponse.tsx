@@ -395,7 +395,7 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
   return (
     <div className="space-y-6">
       {/* Header Info Box */}
-      <div className="p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs font-semibold">
+      <div style={{ backgroundColor: "#E8E8E8" }} className="p-4 border border-gray-200 dark:border-gray-800 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs font-semibold">
         <div className="flex flex-col items-start gap-1">
           <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider block">
             {isRtl ? `مؤشرات موثوقية استجابة الصمامات والخطوط الفيدرالية لآخر يوم مسجل (${latestDate || "-"})` : `Valve Telemetry Consistency Overview for last registered day (${latestDate || "-"})`}
@@ -430,9 +430,9 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
       </div>
 
       {/* Analytics Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 font-semibold">
+      <div style={{ backgroundColor: "#E8E8E8" }} className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 rounded-2xl font-semibold">
         {/* Chart A: Distribution Donut */}
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-850 p-5 rounded-2xl flex flex-col justify-between">
+        <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-200 dark:border-gray-850 p-5 rounded-2xl flex flex-col justify-between">
           <div className="text-start pb-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
             <div className="w-1.5 h-6 bg-emerald-500 rounded"></div>
             <h3 className="text-sm font-extrabold text-gray-900 dark:text-white">
@@ -486,7 +486,7 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
         </div>
 
         {/* Chart B: Bar chart of lines response */}
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-850 p-5 rounded-2xl flex flex-col justify-between">
+        <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-200 dark:border-gray-850 p-5 rounded-2xl flex flex-col justify-between">
           <div className="text-start pb-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
             <div className="w-1.5 h-6 bg-emerald-500 rounded"></div>
             <h3 className="text-sm font-extrabold text-gray-900 dark:text-white">
@@ -524,8 +524,8 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
       </div>
 
       {/* Table Section */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-850 rounded-2xl overflow-hidden shadow-xs">
-        <div className="p-5 border-b border-gray-100 dark:border-gray-800 flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
+      <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-205 dark:border-gray-850 rounded-2xl overflow-hidden shadow-xs">
+        <div style={{ backgroundColor: "#E8E8E8" }} className="p-5 border-b border-gray-100 dark:border-gray-800 flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
           <div className="flex flex-wrap items-center gap-3 flex-1">
             <div className="relative flex-1 min-w-[200px] max-w-sm">
               <Search className="absolute top-1/2 left-3 rtl:left-auto rtl:right-3 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -534,14 +534,16 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
                 placeholder={t.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-xs font-semibold focus:outline-none focus:border-indigo-500 text-gray-800 dark:text-gray-100 placeholder-gray-450 dark:placeholder-gray-550 transition-colors"
+                style={{ backgroundColor: "#f9fafb" }}
+                className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 border border-gray-200 dark:border-gray-800 rounded-lg text-xs font-semibold focus:outline-none focus:border-indigo-500 text-gray-850 dark:text-gray-900 placeholder-gray-450 dark:placeholder-gray-550 transition-colors"
               />
             </div>
 
             <select
               value={selectedResponse}
               onChange={(e) => setSelectedResponse(e.target.value)}
-              className="px-3 py-1.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors"
+              style={{ backgroundColor: "#f9fafb" }}
+              className="px-3 py-1.5 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-800 transition-colors"
             >
               <option value="all">{t.allReponses}</option>
               <option value="responsive">{isRtl ? "مستجيب بالكامل" : "Fully Responsive"}</option>
@@ -551,7 +553,8 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
             <select
               value={selectedZone}
               onChange={(e) => setSelectedZone(e.target.value)}
-              className="px-3 py-1.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors"
+              style={{ backgroundColor: "#f9fafb" }}
+              className="px-3 py-1.5 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-800 transition-colors"
             >
               <option value="all">{t.allZones}</option>
               {uniqueZones.map((z, i) => (
@@ -562,7 +565,8 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
             <select
               value={selectedPeriod}
               onChange={(e) => setSelectedPeriod(e.target.value)}
-              className="px-3 py-1.5 bg-gray-50 dark:bg-gray-950 border border-gray-150 dark:border-indigo-900/60 text-xs font-bold rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer text-slate-700 dark:text-slate-200 transition-all border-indigo-100 bg-indigo-50/20 dark:bg-indigo-950/10 hover:bg-indigo-100/30"
+              style={{ backgroundColor: "#f9fafb" }}
+              className="px-3 py-1.5 border border-gray-150 dark:border-indigo-900/60 text-xs font-bold rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer text-gray-800 transition-all hover:bg-indigo-100/30"
             >
               <option value="all">{t.allPeriods}</option>
               <option value="morning">{isRtl ? "فترة صباحية" : "Morning Run"}</option>
@@ -572,7 +576,8 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
             <select
               value={selectedDay}
               onChange={(e) => setSelectedDay(e.target.value)}
-              className="px-3 py-1.5 bg-gray-50 dark:bg-gray-950 border border-gray-150 dark:border-indigo-900/60 text-xs font-bold rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer text-slate-700 dark:text-slate-200 transition-all border-indigo-100 bg-indigo-50/20 dark:bg-indigo-950/10 hover:bg-indigo-100/30"
+              style={{ backgroundColor: "#f9fafb" }}
+              className="px-3 py-1.5 border border-gray-150 dark:border-indigo-900/60 text-xs font-bold rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer text-gray-800 transition-all hover:bg-indigo-100/30"
             >
               <option value="all">{t.allDays}</option>
               <option value="الأحد">{isRtl ? "الأحد" : "Sunday"}</option>
@@ -659,7 +664,7 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
                       className="hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors"
                      >
                       <td className="p-3 text-center font-extrabold text-[#4F46E5] dark:text-[#818CF8]">
-                        <span className="px-2 py-1 bg-indigo-50 dark:bg-indigo-950/50 rounded">{row.line_name}</span>
+                        <span className="px-2 py-1 bg-indigo-50 dark:bg-indigo-950/50 rounded text-[#404040] dark:text-[#f8f1f1]">{row.line_name}</span>
                       </td>
                       <td className="p-3 text-center font-mono font-semibold">{row.line_size} mm</td>
                       <td className="p-3 text-center">
@@ -680,12 +685,12 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
                         )}
                       </td>
                       <td className="p-3 text-center font-extrabold text-gray-900 dark:text-white">
-                        <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800/70">{row.zone}</span>
+                        <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800/70 text-[#404040] dark:text-[#fbf1f1]">{row.zone}</span>
                       </td>
-                      <td className="p-3 text-center text-slate-600 dark:text-slate-300 font-bold">
+                      <td className="p-3 text-center font-bold text-[#404040] dark:text-[#f8f1f1]">
                         {isRtl ? row.day_ar : (row.day_en || row.day_ar)}
                       </td>
-                      <td className="p-3 text-center font-mono font-semibold text-slate-500 dark:text-slate-400">
+                      <td className="p-3 text-center font-mono font-semibold text-[#404040] dark:text-[#f8f1f1]">
                         {row.date}
                       </td>
                       <td className="p-3 text-center">
@@ -706,8 +711,8 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
                           {isRtl ? row.close_response_ar : row.close_response_en}
                         </span>
                       </td>
-                      <td className="p-3 text-center text-slate-600 dark:text-slate-300 font-semibold">{row.action}</td>
-                      <td className="p-3 text-center text-slate-500 dark:text-slate-400">{row.fault_reason || "-"}</td>
+                      <td className="p-3 text-center font-semibold text-[#404040] dark:text-[#f8f1f1]">{row.action}</td>
+                      <td className="p-3 text-center text-[#404040] dark:text-slate-300">{row.fault_reason || "-"}</td>
                       <td className="p-3 text-center">
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                           String(row.maintenance_status).includes("لم يعالج")

@@ -36,11 +36,8 @@ export default function App() {
     return (saved === "ar" || saved === "en") ? saved : "ar";
   });
   
-  // Theme state
-  const [theme, setTheme] = useState<"light" | "dark">(() => {
-    const saved = localStorage.getItem("preferred_theme");
-    return (saved === "light" || saved === "dark") ? saved : "dark"; // Default to premium eye-safe dark mode
-  });
+  // Theme state: White Theme Only
+  const theme = "light";
 
   // Mobile drawer side controller
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -62,7 +59,7 @@ export default function App() {
   const [viewMode, setViewMode] = useState<"desktop" | "tablet" | "mobile">("desktop");
 
   const isRtl = lang === "ar";
-  const isDark = theme === "dark";
+  const isDark = false;
 
   // Document effects
   useEffect(() => {
@@ -72,14 +69,10 @@ export default function App() {
   }, [lang]);
 
   useEffect(() => {
-    localStorage.setItem("preferred_theme", theme);
+    localStorage.setItem("preferred_theme", "light");
     const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-  }, [theme]);
+    root.classList.remove("dark");
+  }, []);
 
   // Fetch telemetry async loop
   const fetchTelemetryData = useCallback(async (isSilent = false) => {
@@ -140,6 +133,27 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const getSidebarItemClass = (section: typeof activeNavSection) => {
+    const isActive = activeNavSection === section;
+    if (isActive) {
+      return "w-full flex items-center gap-3 p-3 text-xs font-bold transition-all text-white select-none";
+    }
+    return "w-full flex items-center gap-3 p-3 rounded-lg text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-white/5 cursor-pointer transition-colors duration-200 select-none";
+  };
+
+  const getSidebarItemStyle = (section: typeof activeNavSection) => {
+    const isActive = activeNavSection === section;
+    if (isActive) {
+      return {
+        backgroundColor: "rgba(59, 130, 246, 0.15)",
+        borderLeft: "4px solid #3B82F6",
+        color: "#FFFFFF",
+        borderRadius: "12px",
+      };
+    }
+    return {};
+  };
+
   // Translations
   const t = {
     systemTitle: isRtl ? "وحدة المراقبة والتحكم المركزي" : "Central Monitoring & Control Unit",
@@ -166,12 +180,10 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen text-gray-800 dark:text-gray-100 font-sans flex transition-colors duration-300 ${
-      theme === "dark" ? "bg-[#0B0F19]" : "bg-gray-50/50"
-    }`} dir={isRtl ? "rtl" : "ltr"}>
+    <div className="min-h-screen text-[#0F172A] font-sans flex bg-white" dir={isRtl ? "rtl" : "ltr"}>
       
       {/* 1. SIDEBAR (Renders beautifully on desktop & tablet modes, slideout on mobile) */}
-      <aside className={`fixed inset-y-0 z-40 border-r dark:border-l dark:border-r-0 border-gray-200 dark:border-gray-800 bg-white dark:bg-slate-900/90 flex flex-col justify-between transition-all duration-300 ${
+      <aside className={`fixed inset-y-0 z-40 border-r border-slate-800 bg-[#0F172A] flex flex-col justify-between transition-all duration-300 ${
         viewMode === "desktop"
           ? "w-64 translate-x-0"
           : viewMode === "tablet"
@@ -184,18 +196,18 @@ export default function App() {
       }`}>
         
         {/* Sidebar Header */}
-        <div className="p-4.5 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+        <div className="p-4.5 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="p-1.5 bg-indigo-650 rounded-xl text-[#F8FAFC] shadow-xs shrink-0">
+            <div className="p-1.5 bg-indigo-600 rounded-xl text-white shadow-xs shrink-0">
               <Activity className="w-5 h-5" />
             </div>
             <div className={`text-start transition-all duration-300 ${
               viewMode === "tablet" ? "w-0 opacity-0 group-hover:w-44 group-hover:opacity-100 overflow-hidden" : ""
             }`}>
-              <h2 className="text-xs font-black text-indigo-500 tracking-wider uppercase leading-none">
+              <h2 className="text-xs font-black text-indigo-400 tracking-wider uppercase leading-none">
                 Control Sarfay
               </h2>
-              <span className="text-[10px] text-gray-400 font-bold block truncate">
+              <span className="text-[10px] text-slate-400 font-bold block truncate">
                 AVEVA Telemetry Log
               </span>
             </div>
@@ -208,11 +220,8 @@ export default function App() {
           {/* Page 0: Home Page */}
           <button
             onClick={() => handleNavClick("home")}
-            className={`w-full flex items-center gap-3 p-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              activeNavSection === "home"
-                ? "bg-indigo-600 font-extrabold text-white"
-                : "text-gray-650 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-            }`}
+            className={getSidebarItemClass("home")}
+            style={getSidebarItemStyle("home")}
           >
             <Home className="w-4 h-4 shrink-0" />
             <span className={`transition-all duration-300 truncate text-start ${
@@ -225,11 +234,8 @@ export default function App() {
           {/* Page 1: Operational Efficiency */}
           <button
             onClick={() => handleNavClick("operational_efficiency")}
-            className={`w-full flex items-center gap-3 p-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              activeNavSection === "operational_efficiency"
-                ? "bg-indigo-600 font-extrabold text-white"
-                : "text-gray-650 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-            }`}
+            className={getSidebarItemClass("operational_efficiency")}
+            style={getSidebarItemStyle("operational_efficiency")}
           >
             <Compass className="w-4 h-4 shrink-0" />
             <span className={`transition-all duration-300 truncate text-start ${
@@ -242,11 +248,8 @@ export default function App() {
           {/* Page 2: Sector Operation Mechanism */}
           <button
             onClick={() => handleNavClick("sector_operation_mechanism")}
-            className={`w-full flex items-center gap-3 p-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              activeNavSection === "sector_operation_mechanism"
-                ? "bg-indigo-600 font-extrabold text-white"
-                : "text-gray-650 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-            }`}
+            className={getSidebarItemClass("sector_operation_mechanism")}
+            style={getSidebarItemStyle("sector_operation_mechanism")}
           >
             <Settings className="w-4 h-4 shrink-0" />
             <span className={`transition-all duration-300 truncate text-start ${
@@ -259,11 +262,8 @@ export default function App() {
           {/* Page 3: Irrigation Network Response */}
           <button
             onClick={() => handleNavClick("irrigation_network_response")}
-            className={`w-full flex items-center gap-3 p-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              activeNavSection === "irrigation_network_response"
-                ? "bg-indigo-600 font-extrabold text-white"
-                : "text-gray-650 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-            }`}
+            className={getSidebarItemClass("irrigation_network_response")}
+            style={getSidebarItemStyle("irrigation_network_response")}
           >
             <Activity className="w-4 h-4 shrink-0" />
             <span className={`transition-all duration-300 truncate text-start ${
@@ -276,11 +276,8 @@ export default function App() {
           {/* Page 4: General Notes */}
           <button
             onClick={() => handleNavClick("general_notes")}
-            className={`w-full flex items-center gap-3 p-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              activeNavSection === "general_notes"
-                ? "bg-indigo-600 font-extrabold text-white"
-                : "text-gray-650 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-            }`}
+            className={getSidebarItemClass("general_notes")}
+            style={getSidebarItemStyle("general_notes")}
           >
             <AlertTriangle className="w-4 h-4 shrink-0" />
             <span className={`transition-all duration-300 truncate text-start ${
@@ -293,21 +290,21 @@ export default function App() {
         </nav>
 
         {/* Sidebar Footer area */}
-        <div className={`p-3 border-t border-gray-100 dark:border-gray-800 space-y-2 select-none transition-all duration-300 ${
+        <div className={`p-3 border-t border-slate-800 space-y-2 select-none transition-all duration-300 ${
           viewMode === "tablet" ? "w-0 h-0 p-0 overflow-hidden opacity-0 group-hover:w-auto group-hover:h-auto group-hover:opacity-100 group-hover:p-3" : ""
         }`}>
-          <div className="p-2.5 bg-red-500/10 dark:bg-rose-950/20 rounded-xl border border-red-200 dark:border-rose-900/40 text-start transition-all duration-300">
-            <span className="text-[10px] font-extrabold text-red-650 dark:text-rose-400 block uppercase tracking-wider mb-0.5 animate-pulse">
+          <div className="p-2.5 bg-rose-955/40 rounded-xl border border-rose-950/40 text-start transition-all duration-300">
+            <span className="text-[10px] font-extrabold text-rose-455 block uppercase tracking-wider mb-0.5 animate-pulse">
               {isRtl ? "المسؤول الأول" : "Executive Director"}
             </span>
-            <h4 className="text-xs font-black text-rose-800 dark:text-rose-100">
+            <h4 className="text-xs font-black text-rose-100">
               {t.officer}
             </h4>
           </div>
 
           <div className="flex items-center justify-between text-[10px] px-1 text-slate-400 font-bold uppercase tracking-wider">
             <span>{t.versionLabel}</span>
-            <span className="font-mono bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 px-1.5 py-0.5 rounded font-black">
+            <span className="font-mono bg-slate-800 text-indigo-400 px-1.5 py-0.5 rounded font-black">
               v2.1
             </span>
           </div>
@@ -316,28 +313,28 @@ export default function App() {
       </aside>
 
       {/* 2. MAIN APPLICATION WORKSPACE CONTAINER */}
-      <main className={`flex-1 min-w-0 flex flex-col justify-between transition-all duration-300 ${
+      <main className={`flex-1 min-w-0 flex flex-col justify-between transition-all duration-300 bg-white ${
         viewMode === "desktop"
           ? "lg:pl-64 rtl:lg:pl-0 rtl:lg:pr-64 w-full"
           : viewMode === "tablet"
-          ? "lg:pl-16 rtl:lg:pl-0 rtl:lg:pr-16 w-full max-w-[820px] mx-auto border border-gray-200 dark:border-gray-800 shadow-2xl rounded-2xl bg-white dark:bg-gray-950 mt-4 mb-4"
-          : "w-full max-w-[430px] mx-auto border border-gray-200 dark:border-gray-800 shadow-2xl rounded-[36px] bg-white dark:bg-gray-950 mt-4 mb-4 pb-16 overflow-hidden relative"
+          ? "lg:pl-16 rtl:lg:pl-0 rtl:lg:pr-16 w-full max-w-[820px] mx-auto border border-gray-200 shadow-2xl rounded-2xl bg-white mt-4 mb-4"
+          : "w-full max-w-[430px] mx-auto border border-gray-200 shadow-2xl rounded-[36px] bg-white mt-4 mb-4 pb-16 overflow-hidden relative"
       }`}>
         
         {/* App Top Toolbar Header */}
-        <header className="sticky top-0 z-35 bg-white/95 dark:bg-[#0B0F19]/95 backdrop-blur-md border-b border-gray-100 dark:border-gray-850 px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <header className="sticky top-0 z-35 bg-[#0F172A] border-b border-slate-800 px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-white">
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-1.5 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
+              className="lg:hidden p-1.5 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800 cursor-pointer"
             >
               <Menu className="w-4 h-4" />
             </button>
             <div className="text-start">
-              <span className="text-[10px] font-extrabold text-indigo-400 uppercase tracking-wider block">
+              <span className="text-[10px] font-extrabold text-indigo-404 uppercase tracking-wider block">
                 {lang === "ar" ? data?.source?.system_name_ar : data?.source?.system_name_en || t.systemTitle}
               </span>
-              <h1 className="text-base font-black text-gray-900 dark:text-white leading-tight">
+              <h1 className="text-base font-black text-white leading-tight">
                 {t.systemTitle}
               </h1>
             </div>
@@ -347,13 +344,13 @@ export default function App() {
           <div className="flex flex-wrap items-center gap-2">
             
             {/* Lang switcher */}
-            <div className="inline-flex rounded-lg border border-gray-250 dark:border-gray-800 p-0.5 bg-gray-100 dark:bg-gray-950">
+            <div className="inline-flex rounded-lg border border-slate-800 p-0.5 bg-slate-950">
               <button
                 onClick={() => setLang("ar")}
                 className={`px-2 py-1 text-[11px] font-black rounded-md transition-all cursor-pointer ${
                   lang === "ar" 
-                    ? "bg-white dark:bg-slate-800 text-indigo-650 dark:text-indigo-450 shadow-xs" 
-                    : "text-gray-450 hover:text-gray-800 dark:hover:text-slate-200"
+                    ? "bg-indigo-600 text-white shadow-xs" 
+                    : "text-slate-400 hover:text-slate-200"
                 }`}
               >
                 العربية
@@ -362,53 +359,27 @@ export default function App() {
                 onClick={() => setLang("en")}
                 className={`px-2 py-1 text-[11px] font-black rounded-md transition-all cursor-pointer ${
                   lang === "en" 
-                    ? "bg-white dark:bg-slate-800 text-indigo-650 dark:text-indigo-450 shadow-xs" 
-                    : "text-gray-450 hover:text-gray-800 dark:hover:text-slate-200"
+                    ? "bg-indigo-600 text-white shadow-xs" 
+                    : "text-slate-400 hover:text-slate-200"
                 }`}
               >
                 English
               </button>
             </div>
 
-            {/* Dark & light mode switcher */}
-            <div className="inline-flex rounded-lg border border-gray-250 dark:border-gray-800 p-0.5 bg-gray-100 dark:bg-gray-950">
-              <button
-                onClick={() => setTheme("light")}
-                className={`p-1 rounded-md transition-all cursor-pointer ${
-                  theme === "light" 
-                    ? "bg-white text-yellow-500 shadow-xs" 
-                    : "text-gray-450 hover:text-gray-700"
-                }`}
-                title="Light Theme"
-              >
-                <Sun className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={() => setTheme("dark")}
-                className={`p-1 rounded-md transition-all cursor-pointer ${
-                  theme === "dark" 
-                    ? "bg-slate-800 text-indigo-400 shadow-xs" 
-                    : "text-gray-450 hover:text-slate-200"
-                }`}
-                title="Dark Theme"
-              >
-                <Moon className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
             {/* View Mode */}
-            <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg border border-gray-250 dark:border-gray-800 bg-gray-100 dark:bg-gray-950">
-              <span className="text-[10px] font-bold text-gray-450 shrink-0">
+            <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg border border-slate-800 bg-slate-950">
+              <span className="text-[10px] font-bold text-slate-400 shrink-0">
                 🔍 {isRtl ? "العرض" : "View"}
               </span>
               <select
                 value={viewMode}
                 onChange={(e) => setViewMode(e.target.value as any)}
-                className="bg-transparent border-none text-[11px] font-black text-gray-800 dark:text-white focus:outline-none cursor-pointer"
+                className="bg-transparent border-none text-[11px] font-black text-white focus:outline-none cursor-pointer"
               >
-                <option value="desktop" className="bg-white dark:bg-slate-900 text-gray-800 dark:text-white">{isRtl ? "كمبيوتر" : "Desktop"}</option>
-                <option value="tablet" className="bg-white dark:bg-slate-900 text-gray-800 dark:text-white">{isRtl ? "تابلت" : "Tablet"}</option>
-                <option value="mobile" className="bg-white dark:bg-slate-900 text-gray-800 dark:text-white">{isRtl ? "جوال" : "Mobile"}</option>
+                <option value="desktop" className="bg-[#0F172A] text-white">{isRtl ? "كمبيوتر" : "Desktop"}</option>
+                <option value="tablet" className="bg-[#0F172A] text-white">{isRtl ? "تابلت" : "Tablet"}</option>
+                <option value="mobile" className="bg-[#0F172A] text-white">{isRtl ? "جوال" : "Mobile"}</option>
               </select>
             </div>
 
@@ -417,7 +388,7 @@ export default function App() {
               onClick={() => fetchTelemetryData()}
               disabled={loading}
               title={t.refreshTooltip}
-              className="p-1.5 rounded-lg border border-gray-250 dark:border-gray-800 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-850 cursor-pointer disabled:opacity-50 transition-colors"
+              className="p-1.5 rounded-lg border border-slate-800 text-slate-300 hover:bg-slate-855 cursor-pointer disabled:opacity-50 transition-colors"
             >
               <RefreshCcw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
             </button>
@@ -427,7 +398,7 @@ export default function App() {
         {/* Backdrop error banner / Mode indicators */}
         {isFallbackMode && data && (
           <div className="bg-amber-500/10 border-b border-amber-500/20 px-6 py-2.5 text-start">
-            <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs font-semibold text-amber-700 dark:text-amber-400">
+            <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs font-semibold text-amber-700 dark:text-amber-450">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0" />
                 <span>{t.fallbackAlert}</span>
@@ -460,7 +431,7 @@ export default function App() {
         )}
 
         {/* 3. CORE ROUTE AREA */}
-        <div className={`flex-1 w-full max-w-7xl mx-auto min-w-0 overflow-x-hidden ${
+        <div className={`flex-1 w-full max-w-full mx-auto min-w-0 overflow-x-hidden ${
           viewMode === "desktop"
             ? "p-6 space-y-6"
             : viewMode === "tablet"
@@ -569,19 +540,19 @@ export default function App() {
         </div>
 
         {/* Footer info system copyright */}
-        <footer className="py-5 border-t text-center text-[10px] font-bold uppercase tracking-wider bg-white dark:bg-slate-950 border-gray-200 dark:border-gray-800 text-gray-400 dark:text-gray-500">
+        <footer className="py-5 border-t text-center text-[10px] font-bold uppercase tracking-wider bg-[#0F172A] border-slate-800 text-slate-400">
           <span>&copy; {new Date().getFullYear()} {isRtl ? "وحدة المراقبة والتحكم المركزي" : "Central Monitoring & Control Unit"}.</span>
-          <span className="mx-2">|</span>
+          <span className="mx-2 text-slate-600">|</span>
           <span>{isRtl ? "الربط التقني المباشر لخدمات AVEVA" : "AVEVA Live Database Link"}</span>
         </footer>
 
         {/* Mobile Bottom Navigation Bar (Shown ONLY in viewMode === 'mobile') */}
         {viewMode === "mobile" && (
-          <div className="absolute bottom-0 left-0 right-0 h-14 bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-gray-800 flex justify-around items-center z-45 select-none text-[9px] font-black">
+          <div className="absolute bottom-0 left-0 right-0 h-14 bg-[#0F172A] border-t border-slate-800 flex justify-around items-center z-45 select-none text-[9px] font-black">
             <button
               onClick={() => setActiveNavSection("home")}
               className={`flex flex-col items-center gap-1.5 cursor-pointer transition-colors ${
-                activeNavSection === "home" ? "text-indigo-650 dark:text-indigo-400" : "text-gray-400"
+                activeNavSection === "home" ? "text-indigo-400" : "text-slate-400"
               }`}
             >
               <Home className="w-4 h-4" />
@@ -591,7 +562,7 @@ export default function App() {
             <button
               onClick={() => setActiveNavSection("operational_efficiency")}
               className={`flex flex-col items-center gap-1.5 cursor-pointer transition-colors ${
-                activeNavSection === "operational_efficiency" ? "text-indigo-650 dark:text-indigo-400" : "text-gray-400"
+                activeNavSection === "operational_efficiency" ? "text-indigo-400" : "text-slate-400"
               }`}
             >
               <Compass className="w-4 h-4" />
@@ -601,7 +572,7 @@ export default function App() {
             <button
               onClick={() => setActiveNavSection("sector_operation_mechanism")}
               className={`flex flex-col items-center gap-1.5 cursor-pointer transition-colors ${
-                activeNavSection === "sector_operation_mechanism" ? "text-indigo-650 dark:text-indigo-400" : "text-gray-400"
+                activeNavSection === "sector_operation_mechanism" ? "text-indigo-400" : "text-slate-400"
               }`}
             >
               <Settings className="w-4 h-4" />
@@ -611,7 +582,7 @@ export default function App() {
             <button
               onClick={() => setActiveNavSection("irrigation_network_response")}
               className={`flex flex-col items-center gap-1.5 cursor-pointer transition-colors ${
-                activeNavSection === "irrigation_network_response" ? "text-indigo-650 dark:text-indigo-400" : "text-gray-400"
+                activeNavSection === "irrigation_network_response" ? "text-indigo-400" : "text-slate-400"
               }`}
             >
               <Activity className="w-4 h-4" />
@@ -621,7 +592,7 @@ export default function App() {
             <button
               onClick={() => setActiveNavSection("general_notes")}
               className={`flex flex-col items-center gap-1.5 cursor-pointer transition-colors ${
-                activeNavSection === "general_notes" ? "text-indigo-650 dark:text-indigo-400" : "text-gray-400"
+                activeNavSection === "general_notes" ? "text-indigo-400" : "text-slate-400"
               }`}
             >
               <AlertTriangle className="w-4 h-4" />
@@ -648,13 +619,13 @@ export default function App() {
               animate={{ x: 0 }}
               exit={{ x: isRtl ? "100%" : "-100%" }}
               transition={{ type: "tween", duration: 0.25 }}
-              className={`fixed inset-y-0 z-50 w-64 bg-white dark:bg-slate-900 border-r dark:border-l dark:border-r-0 border-gray-200 dark:border-gray-800 p-5 text-start ${
+              className={`fixed inset-y-0 z-50 w-64 bg-[#0F172A] border-r border-slate-800 p-5 text-start ${
                 isRtl ? "right-0" : "left-0"
               }`}
             >
-              <div className="flex items-center justify-between pb-4 border-b border-gray-150 dark:border-gray-800 mb-6">
-                <span className="text-xs font-black text-indigo-500 uppercase">Menu</span>
-                <button onClick={() => setSidebarOpen(false)} className="p-1 text-gray-400 hover:text-gray-100 cursor-pointer">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-6 text-white bg-transparent">
+                <span className="text-xs font-black text-indigo-400 uppercase">Menu</span>
+                <button onClick={() => setSidebarOpen(false)} className="p-1 text-slate-400 hover:text-white cursor-pointer">
                   <X className="w-4.5 h-4.5" />
                 </button>
               </div>
@@ -662,51 +633,46 @@ export default function App() {
               <div className="space-y-3">
                 <button
                   onClick={() => handleNavClick("home")}
-                  className={`w-full flex items-center gap-3 p-3 rounded-lg text-xs font-bold transition-all ${
-                    activeNavSection === "home" ? "bg-indigo-600 text-white" : "text-gray-650 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
+                  className={getSidebarItemClass("home")}
+                  style={getSidebarItemStyle("home")}
                 >
-                  <Home className="w-4 h-4" />
+                  <Home className="w-4 h-4 shrink-0" />
                   <span>{t.navHome}</span>
                 </button>
 
                 <button
                   onClick={() => handleNavClick("operational_efficiency")}
-                  className={`w-full flex items-center gap-3 p-3 rounded-lg text-xs font-bold transition-all ${
-                    activeNavSection === "operational_efficiency" ? "bg-indigo-600 text-white" : "text-gray-650 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
+                  className={getSidebarItemClass("operational_efficiency")}
+                  style={getSidebarItemStyle("operational_efficiency")}
                 >
-                  <Compass className="w-4 h-4" />
+                  <Compass className="w-4 h-4 shrink-0" />
                   <span>{t.navOperationalEfficiency}</span>
                 </button>
 
                 <button
                   onClick={() => handleNavClick("sector_operation_mechanism")}
-                  className={`w-full flex items-center gap-3 p-3 rounded-lg text-xs font-bold transition-all ${
-                    activeNavSection === "sector_operation_mechanism" ? "bg-indigo-600 text-white" : "text-gray-650 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
+                  className={getSidebarItemClass("sector_operation_mechanism")}
+                  style={getSidebarItemStyle("sector_operation_mechanism")}
                 >
-                  <Settings className="w-4 h-4" />
+                  <Settings className="w-4 h-4 shrink-0" />
                   <span>{t.navSectorOperationMechanism}</span>
                 </button>
 
                 <button
                   onClick={() => handleNavClick("irrigation_network_response")}
-                  className={`w-full flex items-center gap-3 p-3 rounded-lg text-xs font-bold transition-all ${
-                    activeNavSection === "irrigation_network_response" ? "bg-indigo-600 text-white" : "text-gray-650 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
+                  className={getSidebarItemClass("irrigation_network_response")}
+                  style={getSidebarItemStyle("irrigation_network_response")}
                 >
-                  <Activity className="w-4 h-4" />
+                  <Activity className="w-4 h-4 shrink-0" />
                   <span>{t.navIrrigationNetworkResponse}</span>
                 </button>
 
                 <button
                   onClick={() => handleNavClick("general_notes")}
-                  className={`w-full flex items-center gap-3 p-3 rounded-lg text-xs font-bold transition-all ${
-                    activeNavSection === "general_notes" ? "bg-indigo-600 text-white" : "text-gray-650 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
+                  className={getSidebarItemClass("general_notes")}
+                  style={getSidebarItemStyle("general_notes")}
                 >
-                  <AlertTriangle className="w-4 h-4" />
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
                   <span>{t.navGeneralNotes}</span>
                 </button>
               </div>

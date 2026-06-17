@@ -205,7 +205,7 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs font-semibold">
+      <div style={{ backgroundColor: "#E8E8E8" }} className="p-4 border border-gray-200 dark:border-gray-800 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs font-semibold">
         <div className="flex flex-col items-start gap-1">
           <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
             {isRtl ? `الملاحظات الإستراتيجية والرقابية للشبكة لآخر يوم مسجل (${latestDate || "-"})` : `Active Strategic Observations for last registered day (${latestDate || "-"})`}
@@ -264,9 +264,9 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
       </div>
 
       {/* Table observations list */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-850 rounded-2xl overflow-hidden shadow-xs">
+      <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-200 dark:border-gray-850 rounded-2xl overflow-hidden shadow-xs">
         {/* Header toolbar */}
-        <div className="p-5 border-b border-gray-100 dark:border-gray-800 flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
+        <div style={{ backgroundColor: "#E8E8E8" }} className="p-5 border-b border-gray-100 dark:border-gray-800 flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
           <div className="flex flex-wrap items-center gap-3 flex-1">
             <div className="relative flex-1 min-w-[200px] max-w-sm">
               <Search className="absolute top-1/2 left-3 rtl:left-auto rtl:right-3 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -275,14 +275,16 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
                 placeholder={t.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-xs font-semibold focus:outline-none focus:border-indigo-500 text-gray-800 dark:text-gray-100 placeholder-gray-450 dark:placeholder-gray-550 transition-colors"
+                style={{ backgroundColor: "#f9fafb" }}
+                className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 border border-gray-200 dark:border-gray-800 rounded-lg text-xs font-semibold focus:outline-none focus:border-indigo-500 text-gray-850 dark:text-gray-900 placeholder-gray-450 dark:placeholder-gray-550 transition-colors"
               />
             </div>
 
             <select
               value={selectedSeverity}
               onChange={(e) => setSelectedSeverity(e.target.value)}
-              className="px-3 py-1.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors"
+              style={{ backgroundColor: "#f9fafb" }}
+              className="px-3 py-1.5 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-850 dark:text-gray-900 transition-colors"
             >
               <option value="all">{t.allSeverities}</option>
               <option value="high">{t.highSev}</option>
@@ -293,7 +295,8 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="px-3 py-1.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors"
+              style={{ backgroundColor: "#f9fafb" }}
+              className="px-3 py-1.5 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-850 dark:text-gray-900 transition-colors"
             >
               <option value="all">{t.allStatuses}</option>
               <option value="open">{t.openStatus}</option>

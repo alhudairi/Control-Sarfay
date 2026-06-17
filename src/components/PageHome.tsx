@@ -447,7 +447,7 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
     <div className="space-y-6 text-start">
       
       {/* Page Header Title */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-150 dark:border-gray-800/80 shadow-xs relative overflow-hidden">
+      <div style={{ backgroundColor: "#E8E8E8" }} className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-6 rounded-2xl border border-gray-150 dark:border-gray-800/80 shadow-xs relative overflow-hidden">
         {/* Abstract decorative accent gradient */}
         <div className="absolute right-0 top-0 w-24 h-24 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-2xl" />
         <div className="absolute left-1/3 bottom-0 w-32 h-32 bg-emerald-500/5 dark:bg-emerald-550/10 rounded-full blur-3xl" />
@@ -511,10 +511,10 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
       </div>
 
       {/* Visual Analytics Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div style={{ backgroundColor: "#E8E8E8" }} className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-4 rounded-2xl">
         
         {/* Pie Chart: Status Breakdown representation */}
-        <div className="lg:col-span-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-150 dark:border-gray-800 shadow-xs flex flex-col justify-between">
+        <div style={{ backgroundColor: "#E8E8E8" }} className="lg:col-span-4 p-5 rounded-2xl border border-gray-150 dark:border-gray-800 shadow-xs flex flex-col justify-between">
           <div>
             <h3 className="text-xs font-black text-gray-900 dark:text-white mb-1 tracking-tight flex items-center gap-2">
               <span className="w-1.5 h-3 rounded-full bg-indigo-500" />
@@ -580,7 +580,7 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
         </div>
 
         {/* Bar Chart: Efficiency indicators details */}
-        <div className="lg:col-span-8 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-150 dark:border-gray-800 shadow-xs flex flex-col justify-between">
+        <div style={{ backgroundColor: "#E8E8E8" }} className="lg:col-span-8 p-5 rounded-2xl border border-gray-150 dark:border-gray-800 shadow-xs flex flex-col justify-between">
           <div>
             <h3 className="text-xs font-black text-gray-900 dark:text-white mb-1 tracking-tight flex items-center gap-2">
               <span className="w-1.5 h-3 rounded-full bg-emerald-555" />
@@ -647,10 +647,10 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
       </div>
 
       {/* Sheet Data Rows Grid (Table) */}
-      <div className="bg-white dark:bg-slate-900 border border-gray-150 dark:border-gray-800/80 rounded-2xl shadow-xs overflow-hidden">
+      <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-150 dark:border-gray-800/80 rounded-2xl shadow-xs overflow-hidden">
         
         {/* Table Top Toolbar Search bar */}
-        <div className="p-4.5 border-b border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
+        <div style={{ backgroundColor: "#E8E8E8" }} className="p-4.5 border-b border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
             <input
@@ -685,7 +685,7 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
         </div>
 
         {/* Data Grid Table View */}
-        <div className="overflow-x-auto w-full">
+        <div style={{ backgroundColor: "#E8E8E8" }} className="overflow-x-auto w-full">
           {sortedRows.length === 0 ? (
             <div className="py-12 text-center text-xs text-gray-400 font-bold">
               {t.noRecords}
