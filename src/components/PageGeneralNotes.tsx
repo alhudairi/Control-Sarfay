@@ -203,14 +203,14 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div style={{ backgroundColor: "#FFFFFF" }} className="space-y-6 p-6 min-h-screen text-[#1E293B]">
       {/* Page Header */}
-      <div style={{ backgroundColor: "#E8E8E8" }} className="p-4 border border-gray-200 dark:border-gray-800 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs font-semibold">
+      <div style={{ backgroundColor: "#FFFFFF" }} className="p-4 border border-gray-200 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs font-semibold">
         <div className="flex flex-col items-start gap-1">
-          <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+          <span className="text-[10px] font-bold block uppercase tracking-wider" style={{ color: "#334155" }}>
             {isRtl ? `الملاحظات الإستراتيجية والرقابية للشبكة لآخر يوم مسجل (${latestDate || "-"})` : `Active Strategic Observations for last registered day (${latestDate || "-"})`}
           </span>
-          <h2 className="text-base font-extrabold text-gray-900 dark:text-white leading-none border-b border-indigo-500 pb-1">
+          <h2 className="text-base font-extrabold pb-1 leading-none" style={{ color: "#0F172A", borderBottomColor: "#4F46E5" }}>
             {isRtl ? data.title_ar : data.title_en || t.title}
           </h2>
         </div>
@@ -226,7 +226,7 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
           isActive={activeKpiFilter === null}
           onClick={() => handleKpiClick("total")}
           lang={lang}
-          theme={theme}
+          theme="light"
         />
         {/* Open notes card */}
         <MetricCard
@@ -237,7 +237,7 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
           isActive={activeKpiFilter === "open"}
           onClick={() => handleKpiClick("open")}
           lang={lang}
-          theme={theme}
+          theme="light"
         />
         {/* Resolved notes card */}
         <MetricCard
@@ -248,7 +248,7 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
           isActive={activeKpiFilter === "resolved"}
           onClick={() => handleKpiClick("resolved")}
           lang={lang}
-          theme={theme}
+          theme="light"
         />
         {/* High severity notes card */}
         <MetricCard
@@ -259,14 +259,14 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
           isActive={activeKpiFilter === "high"}
           onClick={() => handleKpiClick("high")}
           lang={lang}
-          theme={theme}
+          theme="light"
         />
       </div>
 
       {/* Table observations list */}
-      <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-200 dark:border-gray-850 rounded-2xl overflow-hidden shadow-xs">
+      <div style={{ backgroundColor: "#FFFFFF" }} className="border border-gray-200 rounded-2xl overflow-hidden shadow-xs">
         {/* Header toolbar */}
-        <div style={{ backgroundColor: "#E8E8E8" }} className="p-5 border-b border-gray-100 dark:border-gray-800 flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
+        <div style={{ backgroundColor: "#FFFFFF" }} className="p-5 border-b border-gray-200 flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
           <div className="flex flex-wrap items-center gap-3 flex-1">
             <div className="relative flex-1 min-w-[200px] max-w-sm">
               <Search className="absolute top-1/2 left-3 rtl:left-auto rtl:right-3 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -275,16 +275,16 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
                 placeholder={t.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ backgroundColor: "#f9fafb" }}
-                className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 border border-gray-200 dark:border-gray-800 rounded-lg text-xs font-semibold focus:outline-none focus:border-indigo-500 text-gray-850 dark:text-gray-900 placeholder-gray-450 dark:placeholder-gray-550 transition-colors"
+                style={{ backgroundColor: "#FFFFFF", color: "#1E293B", borderColor: "#CBD5E1" }}
+                className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 border rounded-lg text-xs font-semibold focus:outline-none focus:border-indigo-500 placeholder-[#64748B] transition-colors"
               />
             </div>
 
             <select
               value={selectedSeverity}
               onChange={(e) => setSelectedSeverity(e.target.value)}
-              style={{ backgroundColor: "#f9fafb" }}
-              className="px-3 py-1.5 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-850 dark:text-gray-900 transition-colors"
+              style={{ backgroundColor: "#FFFFFF", color: "#1E293B", borderColor: "#CBD5E1" }}
+              className="px-3 py-1.5 border text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer transition-colors"
             >
               <option value="all">{t.allSeverities}</option>
               <option value="high">{t.highSev}</option>
@@ -295,8 +295,8 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              style={{ backgroundColor: "#f9fafb" }}
-              className="px-3 py-1.5 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-850 dark:text-gray-900 transition-colors"
+              style={{ backgroundColor: "#FFFFFF", color: "#1E293B", borderColor: "#CBD5E1" }}
+              className="px-3 py-1.5 border text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer transition-colors"
             >
               <option value="all">{t.allStatuses}</option>
               <option value="open">{t.openStatus}</option>
@@ -306,7 +306,8 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
             {activeKpiFilter && (
               <button
                 onClick={() => setActiveKpiFilter(null)}
-                className="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950 text-indigo-650 dark:text-indigo-350 text-[10px] font-bold rounded-md hover:bg-indigo-100 transition-colors cursor-pointer"
+                style={{ backgroundColor: "#F1F5F9", color: "#1E293B" }}
+                className="px-2.5 py-1 text-[10px] font-bold rounded-md hover:bg-slate-200 transition-colors cursor-pointer"
               >
                 {isRtl ? "مسح فلتر البطاقات" : "Clear card filter"}
               </button>
@@ -314,8 +315,8 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
           </div>
 
           <div className="flex items-center gap-2 self-start lg:self-auto shrink-0">
-            <span className="text-[11px] font-bold text-gray-450 px-2">
-              {t.totalCount} <strong className="text-indigo-600 dark:text-indigo-400 font-mono text-xs">{sortedRows.length}</strong>
+            <span className="text-[11px] font-bold px-2" style={{ color: "#475569" }}>
+              {t.totalCount} <strong className="font-mono text-xs" style={{ color: "#0F172A" }}>{sortedRows.length}</strong>
             </span>
             <button
               onClick={handleExportExcel}
@@ -338,28 +339,28 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
 
         {/* Table representation */}
         <div className="overflow-x-auto overflow-y-auto max-h-[480px]">
-          <table className="w-full border-collapse text-center text-xs min-w-[750px]">
-            <thead className="sticky top-0 bg-gray-50 dark:bg-gray-950 text-gray-550 dark:text-gray-400 font-black border-b border-gray-100 dark:border-gray-800 z-10 select-none">
+          <table className="w-full border-collapse text-center text-xs min-w-[750px]" style={{ borderColor: "#CBD5E1" }}>
+            <thead className="sticky top-0 text-gray-550 font-black border-b z-10 select-none font-sans" style={{ backgroundColor: "#F8FAFC", borderBottomColor: "#CBD5E1" }}>
               <tr>
-                <th onClick={() => handleSort("id")} className="p-4 text-center w-16 hover:text-indigo-550 cursor-pointer">
+                <th onClick={() => handleSort("id")} className="p-4 text-center w-16 hover:text-indigo-650 cursor-pointer" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>
                   <div className="flex items-center justify-center gap-1">{t.colId} <ArrowUpDown className="w-3 h-3 shrink-0" /></div>
                 </th>
-                <th className="p-4 text-center max-w-lg">{t.colStatement}</th>
-                <th className="p-4 text-center">{t.colSector}</th>
-                <th className="p-4 text-center">{t.colAction}</th>
-                <th onClick={() => handleSort("last_update")} className="p-4 text-center hover:text-indigo-550 cursor-pointer">
+                <th className="p-4 text-center max-w-lg" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colStatement}</th>
+                <th className="p-4 text-center" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colSector}</th>
+                <th className="p-4 text-center" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colAction}</th>
+                <th onClick={() => handleSort("last_update")} className="p-4 text-center hover:text-indigo-650 cursor-pointer" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>
                   <div className="flex items-center justify-center gap-1">{t.colLastUpdate} <ArrowUpDown className="w-3 h-3 shrink-0" /></div>
                 </th>
-                <th onClick={() => handleSort("severity")} className="p-4 text-center hover:text-indigo-550 cursor-pointer">
+                <th onClick={() => handleSort("severity")} className="p-4 text-center hover:text-indigo-650 cursor-pointer" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>
                   <div className="flex items-center justify-center gap-1">{t.colSeverity} <ArrowUpDown className="w-3 h-3 shrink-0" /></div>
                 </th>
-                <th className="p-4 text-center">{t.colStatus}</th>
+                <th className="p-4 text-center" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colStatus}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-150 dark:divide-gray-850 font-medium leading-relaxed whitespace-nowrap">
+            <tbody className="divide-y font-medium leading-relaxed whitespace-nowrap" style={{ borderColor: "#CBD5E1" }}>
               {sortedRows.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-8 text-center text-gray-400 font-bold">
+                  <td colSpan={7} className="p-8 text-center font-bold" style={{ color: "#475569" }}>
                     {t.noRecords}
                   </td>
                 </tr>
@@ -367,35 +368,35 @@ export function PageGeneralNotes({ data, lang, theme, viewMode }: PageProps) {
                 sortedRows.map((row) => (
                   <tr 
                     key={row.id} 
-                    className="hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors"
+                    className="hover:bg-slate-50 transition-colors"
                   >
-                    <td className="p-4 text-center font-mono font-black text-slate-400">{row.id}</td>
-                    <td className="p-4 text-center max-w-lg text-gray-800 dark:text-gray-200 font-bold font-sans hover:text-clip hover:whitespace-normal">
+                    <td className="p-4 text-center font-mono font-black border-b" style={{ color: "#475569", borderColor: "#CBD5E1" }}>{row.id}</td>
+                    <td className="p-4 text-center max-w-lg font-bold font-sans hover:text-clip hover:whitespace-normal border-b" style={{ color: "#1E293B", borderColor: "#CBD5E1" }}>
                       {row.statement}
                     </td>
-                    <td className="p-4 text-center font-black text-[#4F46E5] dark:text-[#818CF8]">
-                      <span className="px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/40">{row.sector_or_site}</span>
+                    <td className="p-4 text-center font-black border-b" style={{ borderColor: "#CBD5E1" }}>
+                      <span className="px-2 py-0.5 rounded text-indigo-700 font-bold" style={{ backgroundColor: "#EEF2F6" }}>{row.sector_or_site}</span>
                     </td>
-                    <td className="p-4 text-center font-medium text-gray-500 dark:text-gray-400 hover:text-clip hover:whitespace-normal">
+                    <td className="p-4 text-center font-medium hover:text-clip hover:whitespace-normal border-b" style={{ color: "#475569", borderColor: "#CBD5E1" }}>
                       {row.action || "-"}
                     </td>
-                    <td className="p-4 text-center font-mono font-semibold text-slate-400">{row.last_update}</td>
-                    <td className="p-4 text-center">
+                    <td className="p-4 text-center font-mono font-semibold border-b" style={{ color: "#475569", borderColor: "#CBD5E1" }}>{row.last_update}</td>
+                    <td className="p-4 text-center border-b" style={{ borderColor: "#CBD5E1" }}>
                       <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black mx-auto ${
                         row.severity === "high" 
-                          ? "bg-rose-500/10 text-rose-500" 
+                          ? "bg-rose-100 text-rose-800" 
                           : row.severity === "medium" 
-                          ? "bg-amber-500/10 text-amber-500" 
-                          : "bg-emerald-500/10 text-emerald-500"
+                          ? "bg-amber-100 text-amber-800" 
+                          : "bg-emerald-100 text-emerald-800"
                       }`}>
                         {row.severity === "high" ? t.highSev : row.severity === "medium" ? t.medSev : t.lowSev}
                       </span>
                     </td>
-                    <td className="p-4 text-center font-bold">
+                    <td className="p-4 text-center font-bold border-b" style={{ borderColor: "#CBD5E1" }}>
                       <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-black mx-auto ${
                         row.status === "open" 
-                          ? "bg-amber-55 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400 border border-amber-200 dark:border-amber-900/40" 
-                          : "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/40"
+                          ? "bg-amber-100 text-amber-800 border border-amber-300" 
+                          : "bg-emerald-100 text-emerald-800 border border-emerald-300"
                       }`}>
                         {row.status === "open" ? t.openStatus : t.resolvedStatus}
                       </span>

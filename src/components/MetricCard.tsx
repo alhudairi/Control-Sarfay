@@ -40,65 +40,65 @@ export function MetricCard({
 
   // Select appropriate config based on type
   const getTypeConfig = () => {
-    const iconClass = isDark ? "w-5 h-5 text-indigo-400" : "w-5 h-5 text-indigo-600";
-    const successClass = isDark ? "w-5 h-5 text-emerald-400" : "w-5 h-5 text-emerald-600";
-    const warningClass = isDark ? "w-5 h-5 text-amber-400" : "w-5 h-5 text-amber-600";
-    const dangerClass = isDark ? "w-5 h-5 text-[#EF4444]" : "w-5 h-5 text-[#EF4444]";
-    const localClass = isDark ? "w-5 h-5 text-amber-500" : "w-5 h-5 text-amber-600";
-    const centralClass = isDark ? "w-5 h-5 text-blue-400" : "w-5 h-5 text-blue-600";
-    const dualClass = isDark ? "w-5 h-5 text-emerald-400" : "w-5 h-5 text-emerald-600";
-    const legacyClass = isDark ? "w-5 h-5 text-slate-400" : "w-5 h-5 text-slate-600";
-    const defaultClass = isDark ? "w-5 h-5 text-[#EF4444]" : "w-5 h-5 text-rose-600";
+    const iconClass = "w-5 h-5 text-indigo-600";
+    const successClass = "w-5 h-5 text-emerald-750";
+    const warningClass = "w-5 h-5 text-amber-700";
+    const dangerClass = "w-5 h-5 text-[#DC2626]";
+    const localClass = "w-5 h-5 text-[#D97706]";
+    const centralClass = "w-5 h-5 text-[#2563EB]";
+    const dualClass = "w-5 h-5 text-[#16A34A]";
+    const legacyClass = "w-5 h-5 text-[#64748B]";
+    const defaultClass = "w-5 h-5 text-[#DC2626]";
 
-    const iconBgTint = isDark ? 0.15 : 0.08;
+    const iconBgTint = 0.12;
 
     switch (type) {
       case "total":
         return {
           icon: <Building2 className={iconClass} />,
-          fallbackColor: "#6366F1",
-          iconBg: `rgba(99,102,241,${iconBgTint})`,
+          fallbackColor: "#2563EB",
+          iconBg: `rgba(37,99,235,${iconBgTint})`,
         };
       case "success":
       case "stable":
         return {
           icon: <ShieldCheck className={successClass} />,
-          fallbackColor: "#22C55E",
-          iconBg: `rgba(34,197,94,${iconBgTint})`,
+          fallbackColor: "#16A34A",
+          iconBg: `rgba(22,163,74,${iconBgTint})`,
         };
       case "warning":
       case "fluctuating":
         return {
           icon: <Activity className={warningClass} />,
-          fallbackColor: "#EAB308",
-          iconBg: `rgba(234,179,8,${iconBgTint})`,
+          fallbackColor: "#D97706",
+          iconBg: `rgba(217,119,6,${iconBgTint})`,
         };
       case "danger":
       case "out_of_service":
       case "out of service":
         return {
           icon: <EyeOff className={dangerClass} />,
-          fallbackColor: "#EF4444",
-          iconBg: `rgba(239,68,68,${iconBgTint})`,
+          fallbackColor: "#DC2626",
+          iconBg: `rgba(220,38,38,${iconBgTint})`,
         };
       case "local":
       case "local_only":
       case "local_operation_only":
         return {
           icon: <MapPin className={localClass} />,
-          fallbackColor: "#F59E0B",
-          iconBg: `rgba(245,158,11,${iconBgTint})`,
+          fallbackColor: "#D97706",
+          iconBg: `rgba(217,119,6,${iconBgTint})`,
         };
       case "central":
       case "monitoring_control":
         return {
           icon: <Cpu className={centralClass} />,
-          fallbackColor: "#3B82F6",
-          iconBg: `rgba(59,130,246,${iconBgTint})`,
+          fallbackColor: "#2563EB",
+          iconBg: `rgba(37,99,235,${iconBgTint})`,
         };
       case "monitoring_only":
         return {
-          icon: <Cpu className={isDark ? "w-5 h-5 text-purple-400" : "w-5 h-5 text-purple-650"} />,
+          icon: <Cpu className="w-5 h-5 text-purple-700" />,
           fallbackColor: "#8B5CF6",
           iconBg: `rgba(139,92,246,${iconBgTint})`,
         };
@@ -106,8 +106,8 @@ export function MetricCard({
       case "central_partial_local":
         return {
           icon: <Activity className={dualClass} />,
-          fallbackColor: "#10B981",
-          iconBg: `rgba(16,185,129,${iconBgTint})`,
+          fallbackColor: "#16A34A",
+          iconBg: `rgba(22,163,74,${iconBgTint})`,
         };
       case "legacy_system":
       case "legacy":
@@ -182,7 +182,7 @@ export function MetricCard({
           style={{ 
             fontSize: "15px", 
             fontWeight: 700, 
-            color: isDark ? "#FFFFFF" : "#1E293B" 
+            color: "#334155" 
           }}
         >
           {title}
@@ -196,7 +196,7 @@ export function MetricCard({
           style={{ 
             fontSize: "36px", 
             fontWeight: 800, 
-            color: isDark ? "#FFFFFF" : "#0F172A" 
+            color: "#0F172A" 
           }}
         >
           {value}

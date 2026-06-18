@@ -307,20 +307,36 @@ export function PageSectorOperationMechanism({ data, lang, theme, viewMode }: Pa
     };
   });
 
+  const getMechanismBadgeStyle = (normVal: string) => {
+    switch (normVal) {
+      case "LOCAL_OPERATION_ONLY":
+        return { bg: "#FEF3C7", text: "#92400E" };
+      case "MONITORING_ONLY":
+        return { bg: "#DBEAFE", text: "#1E40AF" };
+      case "MONITORING_AND_CONTROL":
+        return { bg: "#DCFCE7", text: "#166534" };
+      case "CENTRAL_PARTIAL_LOCAL":
+        return { bg: "#DBEAFE", text: "#1E40AF" };
+      case "LEGACY_OPERATION":
+      default:
+        return { bg: "#F1F5F9", text: "#334155" };
+    }
+  };
+
   return (
-    <div className="space-y-6">
+    <div style={{ backgroundColor: "#FFFFFF" }} className="space-y-6 p-6 min-h-screen text-[#1E293B]">
       {/* Header Summary */}
-      <div style={{ backgroundColor: "#E8E8E8" }} className="p-4 border border-gray-200 dark:border-gray-800 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs font-semibold">
+      <div style={{ backgroundColor: "#FFFFFF" }} className="p-4 border border-gray-200 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs font-semibold">
         <div className="flex flex-col items-start gap-1">
-          <span className="text-[10px] font-bold text-amber-500 uppercase tracking-wider block">
+          <span className="text-[10px] font-bold uppercase tracking-wider block" style={{ color: "#334155" }}>
             {isRtl ? `قنوات التشغيل وآليات الرصد الميداني لآخر يوم مسجل (${latestDate || "-"})` : `Operational Pathways Framework for last registered day (${latestDate || "-"})`}
           </span>
-          <h2 className="text-base font-extrabold text-gray-900 dark:text-white leading-none">
+          <h2 className="text-base font-extrabold leading-none" style={{ color: "#0F172A" }}>
             {data.title_ar && lang === "ar" ? data.title_ar : data.title_en || t.title}
           </h2>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <span className="px-3 py-1 bg-amber-55/10 dark:bg-amber-950/40 text-amber-600 dark:text-amber-450 font-extrabold rounded-lg border border-amber-500/20 text-[11px]">
+          <span className="px-3 py-1 font-extrabold rounded-lg border text-[11px]" style={{ backgroundColor: "#FEF3C7", color: "#92400E", borderColor: "#FDE68A" }}>
             {isRtl ? "سجلات قنوات التحكم: " : "Control Channels: "} {computedSummary.total_records}
           </span>
         </div>
@@ -340,7 +356,7 @@ export function PageSectorOperationMechanism({ data, lang, theme, viewMode }: Pa
               isActive={activeKpiFilter === kpi.title_en || activeKpiFilter === kpi.title_ar}
               onClick={() => handleKpiClick(kpi.title_en)}
               lang={lang}
-              theme={theme}
+              theme="light"
               color={mandatedColor}
             />
           );
@@ -348,11 +364,11 @@ export function PageSectorOperationMechanism({ data, lang, theme, viewMode }: Pa
       </div>
 
       {/* Chart and distribution info */}
-      <div style={{ backgroundColor: "#E8E8E8" }} className="grid grid-cols-1 gap-6 p-4 rounded-2xl">
-        <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-200 dark:border-gray-850 p-5 rounded-2xl flex flex-col justify-between">
-          <div className="text-start pb-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
+      <div style={{ backgroundColor: "#FFFFFF" }} className="grid grid-cols-1 gap-6 p-4 border border-gray-200 rounded-2xl">
+        <div style={{ backgroundColor: "#FFFFFF" }} className="border border-gray-200 p-5 rounded-2xl flex flex-col justify-between">
+          <div className="text-start pb-4 border-b border-gray-100 flex items-center gap-2">
             <div className="w-1.5 h-6 bg-amber-500 rounded"></div>
-            <h3 className="text-sm font-extrabold text-gray-900 dark:text-white">
+            <h3 className="text-sm font-extrabold" style={{ color: "#0F172A" }}>
               {t.distTitle}
             </h3>
           </div>
@@ -378,17 +394,23 @@ export function PageSectorOperationMechanism({ data, lang, theme, viewMode }: Pa
                   <Tooltip
                     formatter={(val: number) => [val, isRtl ? "الوحدات" : "Units"]}
                     contentStyle={{
-                      backgroundColor: isDark ? "#0F172A" : "#FFFFFF",
-                      borderColor: isDark ? "#1E293B" : "#E2E8F0"
+                      backgroundColor: "#0F172A",
+                      borderColor: "#0F172A",
+                      borderRadius: "8px",
+                      color: "#FFFFFF",
+                      fontSize: "11px",
+                      fontWeight: "bold"
                     }}
+                    itemStyle={{ color: "#FFFFFF" }}
+                    labelStyle={{ color: "#FFFFFF" }}
                   />
                 </PieChart>
               </ResponsiveContainer>
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
-                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "#334155" }}>
                   {isRtl ? "تشغيل محلي" : "Local Count"}
                 </span>
-                <span className="text-2xl font-black text-amber-500 mt-0.5">
+                <span className="text-2xl font-black mt-0.5" style={{ color: "#0F172A" }}>
                   {data.summary.local_operation_only_count} / {data.summary.total_records}
                 </span>
               </div>
@@ -399,17 +421,18 @@ export function PageSectorOperationMechanism({ data, lang, theme, viewMode }: Pa
               {finalDistribution.map((entry, idx) => (
                 <div 
                   key={idx} 
-                  className="p-3 bg-gray-50 dark:bg-gray-950 rounded-xl border border-gray-100 dark:border-gray-800 flex justify-between items-center text-xs font-semibold"
+                  className="p-3 rounded-xl border border-gray-200 flex justify-between items-center text-xs font-semibold"
+                  style={{ backgroundColor: "#FFFFFF" }}
                 >
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: entry.color }} />
-                    <span className="text-gray-800 dark:text-gray-200">
+                    <span style={{ color: "#334155" }}>
                       {isRtl ? entry.label_ar : entry.label_en}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-gray-900 dark:text-white font-extrabold text-sm">{entry.value}</span>
-                    <span className="text-[10px] text-gray-400 font-bold px-1.5 py-0.5 rounded bg-gray-200 dark:bg-gray-800">
+                    <span className="font-mono font-extrabold text-sm" style={{ color: "#0F172A" }}>{entry.value}</span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded text-[#0F172A]" style={{ backgroundColor: "#F1F5F9" }}>
                       {data.summary.total_records > 0 ? Math.round((entry.value / data.summary.total_records) * 100) : 0}%
                     </span>
                   </div>
@@ -421,9 +444,9 @@ export function PageSectorOperationMechanism({ data, lang, theme, viewMode }: Pa
       </div>
 
       {/* Table grid */}
-      <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-200 dark:border-gray-850 rounded-2xl overflow-hidden shadow-xs">
+      <div style={{ backgroundColor: "#FFFFFF" }} className="border border-gray-200 rounded-2xl overflow-hidden shadow-xs">
         {/* Filter controls */}
-        <div style={{ backgroundColor: "#E8E8E8" }} className="p-5 border-b border-gray-100 dark:border-gray-800 flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
+        <div style={{ backgroundColor: "#FFFFFF" }} className="p-5 border-b border-gray-200 flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
           <div className="flex flex-wrap items-center gap-3 flex-1">
             <div className="relative flex-1 min-w-[200px] max-w-sm">
               <Search className="absolute top-1/2 left-3 rtl:left-auto rtl:right-3 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -432,16 +455,16 @@ export function PageSectorOperationMechanism({ data, lang, theme, viewMode }: Pa
                 placeholder={t.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ backgroundColor: "#f9fafb" }}
-                className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 border border-gray-200 dark:border-gray-800 rounded-lg text-xs font-semibold focus:outline-none focus:border-indigo-500 text-gray-850 dark:text-gray-900 placeholder-gray-450 dark:placeholder-gray-550 transition-colors"
+                style={{ backgroundColor: "#FFFFFF", color: "#1E293B", borderColor: "#CBD5E1" }}
+                className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 border rounded-lg text-xs font-semibold focus:outline-none focus:border-indigo-500 placeholder-[#64748B] transition-colors"
               />
             </div>
 
             <select
               value={selectedMechanism}
               onChange={(e) => setSelectedMechanism(e.target.value)}
-              style={{ backgroundColor: "#f9fafb" }}
-              className="px-3 py-1.5 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-850 dark:text-gray-900 transition-colors"
+              style={{ backgroundColor: "#FFFFFF", color: "#1E293B", borderColor: "#CBD5E1" }}
+              className="px-3 py-1.5 border text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer transition-colors"
             >
               <option value="all">{t.allMechanisms}</option>
               {uniqueMechanisms.map((mech, i) => (
@@ -452,8 +475,8 @@ export function PageSectorOperationMechanism({ data, lang, theme, viewMode }: Pa
             <select
               value={selectedZone}
               onChange={(e) => setSelectedZone(e.target.value)}
-              style={{ backgroundColor: "#f9fafb" }}
-              className="px-3 py-1.5 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-850 dark:text-gray-900 transition-colors"
+              style={{ backgroundColor: "#FFFFFF", color: "#1E293B", borderColor: "#CBD5E1" }}
+              className="px-3 py-1.5 border text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer transition-colors"
             >
               <option value="all">{t.allZones}</option>
               {uniqueZones.map((z, i) => (
@@ -464,7 +487,8 @@ export function PageSectorOperationMechanism({ data, lang, theme, viewMode }: Pa
             {activeKpiFilter && (
               <button
                 onClick={() => setActiveKpiFilter(null)}
-                className="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950 text-indigo-650 dark:text-indigo-350 text-[10px] font-bold rounded-md hover:bg-indigo-100 transition-colors cursor-pointer"
+                style={{ backgroundColor: "#F1F5F9", color: "#1E293B" }}
+                className="px-2.5 py-1 text-[10px] font-bold rounded-md hover:bg-slate-200 transition-colors cursor-pointer"
               >
                 {isRtl ? "مسح فلتر البطاقات" : "Clear card filter"}
               </button>
@@ -472,8 +496,8 @@ export function PageSectorOperationMechanism({ data, lang, theme, viewMode }: Pa
           </div>
 
           <div className="flex items-center gap-2 self-start lg:self-auto shrink-0">
-            <span className="text-[11px] font-bold text-gray-450 px-2">
-              {t.totalCount} <strong className="text-amber-500 font-mono text-xs">{sortedRows.length}</strong>
+            <span className="text-[11px] font-bold px-2" style={{ color: "#475569" }}>
+              {t.totalCount} <strong className="font-mono text-xs" style={{ color: "#0F172A" }}>{sortedRows.length}</strong>
             </span>
             <button
               onClick={handleExportExcel}
@@ -497,61 +521,63 @@ export function PageSectorOperationMechanism({ data, lang, theme, viewMode }: Pa
         {/* List */}
         <div className="overflow-x-auto overflow-y-auto max-h-[480px]">
           <table className="w-full border-collapse text-center text-xs min-w-[700px]">
-            <thead className="sticky top-0 bg-gray-50 dark:bg-gray-950 text-gray-550 dark:text-gray-400 font-black border-b border-gray-100 dark:border-gray-800 z-10 select-none">
+            <thead className="sticky top-0 text-xs font-black border-b z-10 select-none" style={{ backgroundColor: "#F8FAFC", borderBottomColor: "#CBD5E1" }}>
               <tr>
-                <th onClick={() => handleSort("date")} className="p-4 text-center hover:text-amber-500 cursor-pointer">
+                <th onClick={() => handleSort("date")} className="p-4 text-center hover:text-amber-500 cursor-pointer" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>
                   <div className="flex items-center justify-center gap-1">
                     {t.colDate} <ArrowUpDown className="w-3 h-3 shrink-0" />
                   </div>
                 </th>
-                <th className="p-4 text-center">{t.colDay}</th>
-                <th onClick={() => handleSort("zone")} className="p-4 text-center hover:text-amber-500 cursor-pointer">
+                <th className="p-4 text-center" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colDay}</th>
+                <th onClick={() => handleSort("zone")} className="p-4 text-center hover:text-amber-500 cursor-pointer" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>
                   <div className="flex items-center justify-center gap-1">
                     {t.colZone} <ArrowUpDown className="w-3 h-3 shrink-0" />
                   </div>
                 </th>
-                <th onClick={() => handleSort("mechanism")} className="p-4 text-center hover:text-amber-500 cursor-pointer">
+                <th onClick={() => handleSort("mechanism")} className="p-4 text-center hover:text-amber-500 cursor-pointer" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>
                   <div className="flex items-center justify-center gap-1">
                     {t.colMechanism} <ArrowUpDown className="w-3 h-3 shrink-0" />
                   </div>
                 </th>
-                <th className="p-4 text-center">{t.colStatVal}</th>
-                <th className="p-4 text-center max-w-sm">{t.colNotes}</th>
+                <th className="p-4 text-center" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colStatVal}</th>
+                <th className="p-4 text-center max-w-sm" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colNotes}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-150 dark:divide-gray-850 font-medium whitespace-nowrap">
+            <tbody className="divide-y font-medium whitespace-nowrap" style={{ borderColor: "#CBD5E1" }}>
               {sortedRows.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-400 font-bold">
+                  <td colSpan={6} className="p-8 text-center font-bold" style={{ color: "#475569" }}>
                     {t.noRecords}
                   </td>
                 </tr>
               ) : (
                 sortedRows.map((row) => {
-                  const itemColor = getMechanismColor(row.control_value, row.control_en);
+                  const normType = getMechanismNormalized(row);
+                  const badgeStyle = getMechanismBadgeStyle(normType);
                   return (
                     <tr 
                       key={row.id} 
-                      className="hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors"
+                      className="hover:bg-[#F1F5F9] transition-colors"
+                      style={{ borderBottom: "1px solid #CBD5E1" }}
                     >
-                      <td className="p-4 text-center font-mono font-semibold text-slate-500 dark:text-slate-400">{row.date}</td>
-                      <td className="p-4 text-center text-slate-500 dark:text-slate-400">{row.day_ar}</td>
-                      <td className="p-4 text-center font-bold text-gray-900 dark:text-white">
-                        <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800/70">{row.zone}</span>
+                      <td className="p-4 text-center font-mono font-semibold" style={{ color: "#475569" }}>{row.date}</td>
+                      <td className="p-4 text-center" style={{ color: "#475569" }}>{row.day_ar}</td>
+                      <td className="p-4 text-center font-bold" style={{ color: "#0F172A" }}>
+                        <span className="px-2 py-0.5 rounded" style={{ backgroundColor: "#F1F5F9" }}>{row.zone}</span>
                       </td>
                       <td className="p-4 text-center">
                         <span 
                           className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black mx-auto"
-                          style={{ backgroundColor: `${itemColor}15`, color: itemColor }}
+                          style={{ backgroundColor: badgeStyle.bg, color: badgeStyle.text }}
                         >
-                          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: itemColor }} />
+                          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: badgeStyle.text }} />
                           {isRtl ? row.control_type_ar : row.control_en}
                         </span>
                       </td>
-                      <td className="p-4 text-center font-mono text-xs text-gray-450 dark:text-gray-500 font-bold">
-                        <code className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded font-black max-w-xs">{row.control_value}</code>
+                      <td className="p-4 text-center font-mono text-xs font-bold" style={{ color: "#1E293B" }}>
+                        <code className="px-2 py-1 rounded font-black max-w-xs" style={{ backgroundColor: "#F1F5F9" }}>{row.control_value}</code>
                       </td>
-                      <td className="p-4 text-center text-xs text-gray-500 dark:text-gray-400 max-w-sm font-medium leading-relaxed truncate hover:text-clip hover:whitespace-normal">
+                      <td className="p-4 text-center text-xs max-w-sm font-medium leading-relaxed truncate hover:text-clip hover:whitespace-normal" style={{ color: "#475569" }}>
                         {row.notes}
                       </td>
                     </tr>

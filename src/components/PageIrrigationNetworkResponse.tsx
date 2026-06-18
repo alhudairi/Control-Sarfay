@@ -393,26 +393,26 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
   };
 
   return (
-    <div className="space-y-6">
+    <div style={{ backgroundColor: "#FFFFFF" }} className="space-y-6 p-6 min-h-screen">
       {/* Header Info Box */}
-      <div style={{ backgroundColor: "#E8E8E8" }} className="p-4 border border-gray-200 dark:border-gray-800 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs font-semibold">
+      <div style={{ backgroundColor: "#FFFFFF" }} className="p-4 border border-gray-200 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs font-semibold">
         <div className="flex flex-col items-start gap-1">
-          <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider block">
+          <span className="text-[10px] font-bold uppercase tracking-wider block" style={{ color: "#334155" }}>
             {isRtl ? `مؤشرات موثوقية استجابة الصمامات والخطوط الفيدرالية لآخر يوم مسجل (${latestDate || "-"})` : `Valve Telemetry Consistency Overview for last registered day (${latestDate || "-"})`}
           </span>
-          <h2 className="text-base font-extrabold text-gray-900 dark:text-white leading-none">
+          <h2 className="text-base font-extrabold leading-none" style={{ color: "#0F172A" }}>
             {data.title_ar && lang === "ar" ? data.title_ar : data.title_en || t.title}
           </h2>
         </div>
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 font-extrabold rounded-lg border border-emerald-100 dark:border-indigo-900/40">
+          <span className="px-3 py-1 font-extrabold rounded-lg border text-xs" style={{ backgroundColor: "#DCFCE7", color: "#166534", borderColor: "#86EFAC" }}>
             {t.efficiencyRate} {computedSummary.response_efficiency_percent}%
           </span>
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" style={{ backgroundColor: "#FFFFFF" }}>
         {computedKpis.map((kpi, idx) => (
           <MetricCard
             key={idx}
@@ -424,18 +424,18 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
             isActive={activeKpiFilter === kpi.type}
             onClick={() => handleKpiClick(kpi.type)}
             lang={lang}
-            theme={theme}
+            theme="light"
           />
         ))}
       </div>
 
       {/* Analytics Charts */}
-      <div style={{ backgroundColor: "#E8E8E8" }} className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 rounded-2xl font-semibold">
+      <div style={{ backgroundColor: "#FFFFFF" }} className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 border border-gray-200 rounded-2xl font-semibold">
         {/* Chart A: Distribution Donut */}
-        <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-200 dark:border-gray-850 p-5 rounded-2xl flex flex-col justify-between">
-          <div className="text-start pb-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
+        <div style={{ backgroundColor: "#FFFFFF" }} className="border border-gray-200 p-5 rounded-2xl flex flex-col justify-between">
+          <div className="text-start pb-4 border-b border-gray-100 flex items-center gap-2">
             <div className="w-1.5 h-6 bg-emerald-500 rounded"></div>
-            <h3 className="text-sm font-extrabold text-gray-900 dark:text-white">
+            <h3 className="text-sm font-extrabold" style={{ color: "#0F172A" }}>
               {t.distTitle}
             </h3>
           </div>
@@ -458,26 +458,32 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
                 <Tooltip 
                   formatter={(val: number) => [val, isRtl ? "عدد خطوط الري" : "Total Lines"]}
                   contentStyle={{
-                    backgroundColor: isDark ? "#0F172A" : "#FFFFFF",
-                    borderColor: isDark ? "#1E293B" : "#E2E8F0"
+                    backgroundColor: "#0F172A",
+                    borderColor: "#0F172A",
+                    borderRadius: "8px",
+                    color: "#FFFFFF",
+                    fontSize: "11px",
+                    fontWeight: "bold"
                   }}
+                  itemStyle={{ color: "#FFFFFF" }}
+                  labelStyle={{ color: "#FFFFFF" }}
                 />
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
-              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "#334155" }}>
                 {isRtl ? "معدل الاستجابة" : "Efficiency"}
               </span>
-              <span className="text-2xl font-black text-gray-900 dark:text-white mt-0.5">
+              <span className="text-2xl mt-0.5" style={{ color: "#0F172A", fontWeight: 800 }}>
                 {computedSummary.response_efficiency_percent}%
               </span>
             </div>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4 border-t border-gray-100 dark:border-gray-800 text-xs">
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-4 border-t border-gray-100 text-xs">
             {data.chart_data.response_distribution.map((entry, idx) => (
               <div key={idx} className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: entry.color }} />
-                <span className="text-gray-650 dark:text-gray-450 font-semibold">
+                <span className="font-semibold" style={{ color: "#334155" }}>
                   {isRtl ? entry.label_ar : entry.label_en}: {entry.value}
                 </span>
               </div>
@@ -486,10 +492,10 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
         </div>
 
         {/* Chart B: Bar chart of lines response */}
-        <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-200 dark:border-gray-850 p-5 rounded-2xl flex flex-col justify-between">
-          <div className="text-start pb-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
+        <div style={{ backgroundColor: "#FFFFFF" }} className="border border-gray-200 p-5 rounded-2xl flex flex-col justify-between">
+          <div className="text-start pb-4 border-b border-gray-100 flex items-center gap-2">
             <div className="w-1.5 h-6 bg-emerald-500 rounded"></div>
-            <h3 className="text-sm font-extrabold text-gray-900 dark:text-white">
+            <h3 className="text-sm font-extrabold" style={{ color: "#0F172A" }}>
               {t.barTitle}
             </h3>
           </div>
@@ -499,15 +505,21 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
                 data={data.chart_data.lines_response}
                 margin={{ top: 10, right: 10, left: -20, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? "#1E293B" : "#F1F5F9"} />
-                <XAxis dataKey="line_name" stroke="#94A3B8" fontSize={9} />
-                <YAxis stroke="#94A3B8" fontSize={10} domain={[0, 100]} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#CBD5E1" />
+                <XAxis dataKey="line_name" stroke="#334155" fontSize={9} tick={{ fill: "#334155", fontWeight: "bold" }} />
+                <YAxis stroke="#334155" fontSize={10} domain={[0, 100]} tick={{ fill: "#334155", fontWeight: "bold" }} />
                 <Tooltip
                   formatter={(val: number) => [`${val}%`, isRtl ? "تقييم الكفاءة" : "Telemetry Quality"]}
                   contentStyle={{
-                    backgroundColor: isDark ? "#0F172A" : "#FFFFFF",
-                    borderColor: isDark ? "#1E293B" : "#E2E8F0"
+                    backgroundColor: "#0F172A",
+                    borderColor: "#0F172A",
+                    borderRadius: "8px",
+                    color: "#FFFFFF",
+                    fontSize: "11px",
+                    fontWeight: "bold"
                   }}
+                  itemStyle={{ color: "#FFFFFF" }}
+                  labelStyle={{ color: "#FFFFFF" }}
                 />
                 <Bar dataKey="response_score" fill="#22C55E">
                   {data.chart_data.lines_response.map((entry, index) => (
@@ -517,15 +529,15 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider text-center pt-2">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-center pt-2" style={{ color: "#475569" }}>
             * {isRtl ? "مؤشر 100 يعني استجابة الصمام كاملة لأوامر التشغيل." : "Score of 100 represents full responsive valves."}
           </div>
         </div>
       </div>
 
       {/* Table Section */}
-      <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-205 dark:border-gray-850 rounded-2xl overflow-hidden shadow-xs">
-        <div style={{ backgroundColor: "#E8E8E8" }} className="p-5 border-b border-gray-100 dark:border-gray-800 flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
+      <div style={{ backgroundColor: "#FFFFFF" }} className="border border-gray-200 rounded-2xl overflow-hidden shadow-xs">
+        <div style={{ backgroundColor: "#FFFFFF" }} className="p-5 border-b border-gray-200 flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
           <div className="flex flex-wrap items-center gap-3 flex-1">
             <div className="relative flex-1 min-w-[200px] max-w-sm">
               <Search className="absolute top-1/2 left-3 rtl:left-auto rtl:right-3 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -534,16 +546,16 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
                 placeholder={t.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ backgroundColor: "#f9fafb" }}
-                className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 border border-gray-200 dark:border-gray-800 rounded-lg text-xs font-semibold focus:outline-none focus:border-indigo-500 text-gray-850 dark:text-gray-900 placeholder-gray-450 dark:placeholder-gray-550 transition-colors"
+                style={{ backgroundColor: "#FFFFFF", color: "#1E293B", borderColor: "#CBD5E1" }}
+                className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 border rounded-lg text-xs font-semibold focus:outline-none focus:border-indigo-500 placeholder-[#64748B] transition-colors"
               />
             </div>
 
             <select
               value={selectedResponse}
               onChange={(e) => setSelectedResponse(e.target.value)}
-              style={{ backgroundColor: "#f9fafb" }}
-              className="px-3 py-1.5 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-800 transition-colors"
+              style={{ backgroundColor: "#FFFFFF", color: "#1E293B", borderColor: "#CBD5E1" }}
+              className="px-3 py-1.5 border text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer transition-colors"
             >
               <option value="all">{t.allReponses}</option>
               <option value="responsive">{isRtl ? "مستجيب بالكامل" : "Fully Responsive"}</option>
@@ -553,8 +565,8 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
             <select
               value={selectedZone}
               onChange={(e) => setSelectedZone(e.target.value)}
-              style={{ backgroundColor: "#f9fafb" }}
-              className="px-3 py-1.5 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-800 transition-colors"
+              style={{ backgroundColor: "#FFFFFF", color: "#1E293B", borderColor: "#CBD5E1" }}
+              className="px-3 py-1.5 border text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer transition-colors"
             >
               <option value="all">{t.allZones}</option>
               {uniqueZones.map((z, i) => (
@@ -565,8 +577,8 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
             <select
               value={selectedPeriod}
               onChange={(e) => setSelectedPeriod(e.target.value)}
-              style={{ backgroundColor: "#f9fafb" }}
-              className="px-3 py-1.5 border border-gray-150 dark:border-indigo-900/60 text-xs font-bold rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer text-gray-800 transition-all hover:bg-indigo-100/30"
+              style={{ backgroundColor: "#FFFFFF", color: "#1E293B", borderColor: "#CBD5E1" }}
+              className="px-3 py-1.5 border text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer transition-colors"
             >
               <option value="all">{t.allPeriods}</option>
               <option value="morning">{isRtl ? "فترة صباحية" : "Morning Run"}</option>
@@ -576,8 +588,8 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
             <select
               value={selectedDay}
               onChange={(e) => setSelectedDay(e.target.value)}
-              style={{ backgroundColor: "#f9fafb" }}
-              className="px-3 py-1.5 border border-gray-150 dark:border-indigo-900/60 text-xs font-bold rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer text-gray-800 transition-all hover:bg-indigo-100/30"
+              style={{ backgroundColor: "#FFFFFF", color: "#1E293B", borderColor: "#CBD5E1" }}
+              className="px-3 py-1.5 border text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer transition-colors"
             >
               <option value="all">{t.allDays}</option>
               <option value="الأحد">{isRtl ? "الأحد" : "Sunday"}</option>
@@ -592,7 +604,8 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
             {activeKpiFilter && (
               <button
                 onClick={() => setActiveKpiFilter(null)}
-                className="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950 text-indigo-650 dark:text-indigo-350 text-[10px] font-bold rounded-md hover:bg-indigo-100 transition-colors cursor-pointer"
+                style={{ backgroundColor: "#F1F5F9", color: "#1E293B" }}
+                className="px-2.5 py-1 text-[10px] font-bold rounded-md hover:bg-slate-200 transition-colors cursor-pointer"
               >
                 {isRtl ? "مسح فلتر البطاقات" : "Clear card filter"}
               </button>
@@ -600,8 +613,8 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
           </div>
 
           <div className="flex items-center gap-2 self-start lg:self-auto shrink-0">
-            <span className="text-[11px] font-bold text-gray-450 px-2">
-              {t.totalCount} <strong className="text-emerald-500 font-mono text-xs">{sortedRows.length}</strong>
+            <span className="text-[11px] font-bold px-2" style={{ color: "#475569" }}>
+              {t.totalCount} <strong className="font-mono text-xs" style={{ color: "#0F172A" }}>{sortedRows.length}</strong>
             </span>
             <button
               onClick={handleExportExcel}
@@ -624,111 +637,144 @@ export function PageIrrigationNetworkResponse({ data, lang, theme, viewMode }: P
 
         {/* List Table */}
         <div className="overflow-x-auto overflow-y-auto max-h-[480px]">
-          <table className="w-full border-collapse text-center text-xs min-w-[900px]">
-            <thead className="sticky top-0 bg-gray-50 dark:bg-gray-950 text-gray-550 dark:text-gray-400 font-black border-b border-gray-100 dark:border-gray-800 z-10 select-none">
+          <table className="w-full border-collapse text-center text-xs min-w-[900px]" style={{ borderColor: "#CBD5E1" }}>
+            <thead className="sticky top-0 text-xs font-black border-b z-10 select-none" style={{ backgroundColor: "#F8FAFC", borderBottomColor: "#CBD5E1" }}>
               <tr>
-                <th onClick={() => handleSort("line_name")} className="p-3 text-center hover:text-emerald-500 cursor-pointer">
+                <th onClick={() => handleSort("line_name")} className="p-3 text-center hover:text-emerald-500 cursor-pointer" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>
                   <div className="flex items-center justify-center gap-1">{t.colLineName} <ArrowUpDown className="w-3 h-3 shrink-0" /></div>
                 </th>
-                <th className="p-3 text-center">{t.colLineSize}</th>
-                <th className="p-3 text-center">{t.colPeriod}</th>
-                <th onClick={() => handleSort("zone")} className="p-3 text-center hover:text-emerald-500 cursor-pointer">
+                <th className="p-3 text-center" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colLineSize}</th>
+                <th className="p-3 text-center" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colPeriod}</th>
+                <th onClick={() => handleSort("zone")} className="p-3 text-center hover:text-emerald-500 cursor-pointer" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>
                   <div className="flex items-center justify-center gap-1">{t.colZone} <ArrowUpDown className="w-3 h-3 shrink-0" /></div>
                 </th>
-                <th className="p-3 text-center">{t.colDay}</th>
-                <th onClick={() => handleSort("zone")} className="p-3 text-center hover:text-emerald-500 cursor-pointer">
+                <th className="p-3 text-center" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colDay}</th>
+                <th onClick={() => handleSort("zone")} className="p-3 text-center hover:text-emerald-500 cursor-pointer" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>
                   <div className="flex items-center justify-center gap-1">{t.colDate} <ArrowUpDown className="w-3 h-3 shrink-0" /></div>
                 </th>
-                <th className="p-3 text-center">{t.colOpenResp}</th>
-                <th className="p-3 text-center">{t.colCloseResp}</th>
-                <th className="p-3 text-center">{t.colAction}</th>
-                <th className="p-3 text-center">{t.colFault}</th>
-                <th className="p-3 text-center">{t.colMaint}</th>
-                <th className="p-3 text-center">{t.colMaintDate}</th>
+                <th className="p-3 text-center" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colOpenResp}</th>
+                <th className="p-3 text-center" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colCloseResp}</th>
+                <th className="p-3 text-center" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colAction}</th>
+                <th className="p-3 text-center" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colFault}</th>
+                <th className="p-3 text-center" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colMaint}</th>
+                <th className="p-3 text-center" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colMaintDate}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-150 dark:divide-gray-850 font-medium whitespace-nowrap">
+            <tbody className="divide-y font-medium whitespace-nowrap" style={{ borderColor: "#CBD5E1" }}>
               {sortedRows.length === 0 ? (
                 <tr>
-                  <td colSpan={12} className="p-8 text-center text-gray-400 font-bold">
+                  <td colSpan={12} className="p-8 text-center font-bold" style={{ color: "#475569" }}>
                     {t.noRecords}
                   </td>
                 </tr>
               ) : (
                 sortedRows.map((row) => {
-                  const openColor = getResponseColor(row.open_response_ar);
-                  const closeColor = getResponseColor(row.close_response_ar);
+                  const normOpenResp = isOpenResponsive(row);
+                  const normCloseResp = isCloseResponsive(row);
+
+                  // Setup treatment status styling
+                  let mtBg = "#F1F5F9";
+                  let mtColor = "#334155";
+                  const mStatus = String(row.maintenance_status || "").trim();
+                  if (mStatus.includes("لم يعالج")) {
+                    mtBg = "#FEE2E2";
+                    mtColor = "#991B1B";
+                  } else if (mStatus.includes("تحت المعالجة") || mStatus.includes("تحت processing") || mStatus.includes("progress")) {
+                    mtBg = "#FEF3C7";
+                    mtColor = "#92400E";
+                  } else if (mStatus.includes("مرفوع للصيانة")) {
+                    mtBg = "#DBEAFE";
+                    mtColor = "#1E40AF";
+                  } else if (mStatus === "لا يوجد" || mStatus === "-" || !row.maintenance_status) {
+                    mtBg = "#F1F5F9";
+                    mtColor = "#334155";
+                  } else if (mStatus.includes("معالج") || mStatus.includes("Resolved")) {
+                    mtBg = "#DCFCE7";
+                    mtColor = "#166534";
+                  }
+
                   return (
                      <tr 
-                      key={row.id} 
-                      className="hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors"
+                       key={row.id} 
+                       className="hover:bg-[#F1F5F9] transition-colors"
+                       style={{ borderBottom: "1px solid #CBD5E1" }}
                      >
-                      <td className="p-3 text-center font-extrabold text-[#4F46E5] dark:text-[#818CF8]">
-                        <span className="px-2 py-1 bg-indigo-50 dark:bg-indigo-950/50 rounded text-[#404040] dark:text-[#f8f1f1]">{row.line_name}</span>
+                      <td className="p-3 text-center font-extrabold" style={{ color: "#1E293B" }}>
+                        {row.line_name}
                       </td>
-                      <td className="p-3 text-center font-mono font-semibold">{row.line_size} mm</td>
+                      <td className="p-3 text-center font-mono font-semibold" style={{ color: "#1E293B" }}>{row.line_size} mm</td>
                       <td className="p-3 text-center">
                         {getPeriodValue(row) === (isRtl ? "صباحية" : "Morning") ? (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50/80 text-amber-700 border border-amber-200/50 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-900/40">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: "#FEF3C7", color: "#92400E" }}>
                             <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                             {getPeriodValue(row)}
                           </span>
                         ) : getPeriodValue(row) === (isRtl ? "مسائية" : "Evening") ? (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50/80 text-indigo-700 border border-indigo-200/50 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-900/40">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: "#DBEAFE", color: "#1E40AF" }}>
                             <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
                             {getPeriodValue(row)}
                           </span>
                         ) : (
-                          <span className="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-850 font-mono text-xs font-semibold text-slate-600 dark:text-slate-400">
+                          <span className="px-2.5 py-1 rounded font-mono text-xs font-semibold" style={{ backgroundColor: "#F1F5F9", color: "#334155" }}>
                             {getPeriodValue(row)}
                           </span>
                         )}
                       </td>
-                      <td className="p-3 text-center font-extrabold text-gray-900 dark:text-white">
-                        <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800/70 text-[#404040] dark:text-[#fbf1f1]">{row.zone}</span>
+                      <td className="p-3 text-center font-extrabold" style={{ color: "#1E293B" }}>
+                        {row.zone}
                       </td>
-                      <td className="p-3 text-center font-bold text-[#404040] dark:text-[#f8f1f1]">
+                      <td style={{ color: "#1E293B" }} className="p-3 text-center font-bold">
                         {isRtl ? row.day_ar : (row.day_en || row.day_ar)}
                       </td>
-                      <td className="p-3 text-center font-mono font-semibold text-[#404040] dark:text-[#f8f1f1]">
+                      <td style={{ color: "#1E293B" }} className="p-3 text-center font-mono font-semibold">
                         {row.date}
                       </td>
                       <td className="p-3 text-center">
-                        <span 
-                          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black"
-                          style={{ backgroundColor: `${openColor}15`, color: openColor }}
-                        >
-                          <span className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: openColor }} />
-                          {isRtl ? row.open_response_ar : row.open_response_en}
-                        </span>
+                        {normOpenResp ? (
+                          <span 
+                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black mx-auto"
+                            style={{ backgroundColor: "#DCFCE7", color: "#166534" }}
+                          >
+                            <span className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: "#166534" }} />
+                            {isRtl ? "يستجيب" : "Responsive"}
+                          </span>
+                        ) : (
+                          <span 
+                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black mx-auto"
+                            style={{ backgroundColor: "#FEE2E2", color: "#991B1B" }}
+                          >
+                            <span className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: "#991B1B" }} />
+                            {isRtl ? "لا يستجيب" : "Non-Responsive"}
+                          </span>
+                        )}
                       </td>
                       <td className="p-3 text-center">
-                        <span 
-                          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black"
-                          style={{ backgroundColor: `${closeColor}15`, color: closeColor }}
-                        >
-                          <span className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: closeColor }} />
-                          {isRtl ? row.close_response_ar : row.close_response_en}
-                        </span>
+                        {normCloseResp ? (
+                          <span 
+                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black mx-auto"
+                            style={{ backgroundColor: "#DCFCE7", color: "#166534" }}
+                          >
+                            <span className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: "#166534" }} />
+                            {isRtl ? "يستجيب" : "Responsive"}
+                          </span>
+                        ) : (
+                          <span 
+                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black mx-auto"
+                            style={{ backgroundColor: "#FEE2E2", color: "#991B1B" }}
+                          >
+                            <span className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: "#991B1B" }} />
+                            {isRtl ? "لا يستجيب" : "Non-Responsive"}
+                          </span>
+                        )}
                       </td>
-                      <td className="p-3 text-center font-semibold text-[#404040] dark:text-[#f8f1f1]">{row.action}</td>
-                      <td className="p-3 text-center text-[#404040] dark:text-slate-300">{row.fault_reason || "-"}</td>
+                      <td style={{ color: "#1E293B" }} className="p-3 text-center font-semibold">{row.action}</td>
+                      <td className="p-3 text-center font-medium" style={{ color: "#475569" }}>{row.fault_reason || "-"}</td>
                       <td className="p-3 text-center">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          String(row.maintenance_status).includes("لم يعالج")
-                            ? "bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-900/40"
-                            : String(row.maintenance_status).includes("معالج") && !String(row.maintenance_status).includes("تحت")
-                            ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/40"
-                            : String(row.maintenance_status).includes("تحت") || String(row.maintenance_status).includes("under progress") || String(row.maintenance_status).includes("under processing")
-                            ? "bg-amber-50 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400 border border-amber-200 dark:border-amber-900/40"
-                            : row.maintenance_status === "مرفوع للصيانة" || row.maintenance_status === "-" 
-                            ? "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400" 
-                            : "bg-emerald-50 text-emerald-600 dark:bg-emerald-920/20 dark:text-emerald-400"
-                        }`}>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold" style={{ backgroundColor: mtBg, color: mtColor }}>
                           {row.maintenance_status}
                         </span>
                       </td>
-                      <td className="p-3 text-center font-mono text-slate-400 font-semibold">{row.treatment_date || "-"}</td>
+                      <td className="p-3 text-center font-mono font-semibold" style={{ color: "#475569" }}>{row.treatment_date || "-"}</td>
                     </tr>
                   );
                 })

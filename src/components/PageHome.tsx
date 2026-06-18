@@ -398,8 +398,11 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
 
     if (isStable) {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-black bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+        <span 
+          className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-black border border-[#166534]/20"
+          style={{ backgroundColor: "#DCFCE7", color: "#166534" }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: "#166534" }} />
           {text}
         </span>
       );
@@ -407,8 +410,11 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
 
     if (isOutOfService) {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-black bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/25">
-          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+        <span 
+          className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-black border border-[#991B1B]/20"
+          style={{ backgroundColor: "#FEE2E2", color: "#991B1B" }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: "#991B1B" }} />
           {text}
         </span>
       );
@@ -416,8 +422,11 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
 
     if (isManual) {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-black bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/25">
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+        <span 
+          className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-black border border-[#92400E]/20"
+          style={{ backgroundColor: "#FEF3C7", color: "#92400E" }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: "#92400E" }} />
           {text}
         </span>
       );
@@ -426,21 +435,21 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
     // Numbers representation
     if (!isNaN(parseFloat(text)) && text.includes("%")) {
       const percentVal = parseFloat(text);
-      let barColor = "bg-indigo-500";
-      if (percentVal >= 90) barColor = "bg-emerald-550";
-      else if (percentVal < 50) barColor = "bg-rose-500";
+      let barColor = "bg-indigo-600";
+      if (percentVal >= 90) barColor = "bg-emerald-600";
+      else if (percentVal < 50) barColor = "bg-rose-600";
 
       return (
         <div className="flex items-center gap-2 max-w-[120px]">
-          <span className="font-mono text-xs font-bold">{text}</span>
-          <div className="w-12 bg-gray-200 dark:bg-gray-800 h-1.5 rounded-full overflow-hidden shrink-0 hidden sm:block">
+          <span className="font-mono text-xs font-bold" style={{ color: "#0F172A" }}>{text}</span>
+          <div className="w-12 bg-gray-200 h-1.5 rounded-full overflow-hidden shrink-0 hidden sm:block">
             <div className={`h-full ${barColor}`} style={{ width: `${Math.min(percentVal, 100)}%` }} />
           </div>
         </div>
       );
     }
 
-    return <span className="font-semibold text-xs text-gray-700 dark:text-gray-300">{text}</span>;
+    return <span className="font-semibold text-xs" style={{ color: "#1E293B" }}>{text}</span>;
   };
 
   return (
@@ -459,10 +468,10 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
             </span>
             <Sparkles className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
           </div>
-          <h2 className="text-xl font-black text-gray-900 dark:text-white leading-tight">
+          <h2 className="text-xl font-black leading-tight" style={{ color: "#0F172A" }}>
             {t.title}
           </h2>
-          <p className="text-xs text-gray-400 font-semibold dark:text-slate-400 leading-relaxed">
+          <p className="text-xs font-semibold leading-relaxed" style={{ color: "#334155" }}>
             {t.subtitle}
           </p>
         </div>
@@ -516,11 +525,11 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
         {/* Pie Chart: Status Breakdown representation */}
         <div style={{ backgroundColor: "#E8E8E8" }} className="lg:col-span-4 p-5 rounded-2xl border border-gray-150 dark:border-gray-800 shadow-xs flex flex-col justify-between">
           <div>
-            <h3 className="text-xs font-black text-gray-900 dark:text-white mb-1 tracking-tight flex items-center gap-2">
+            <h3 style={{ color: "#0F172A" }} className="text-xs font-black mb-1 tracking-tight flex items-center gap-2">
               <span className="w-1.5 h-3 rounded-full bg-indigo-500" />
               {t.recentStatusOverview}
             </h3>
-            <span className="text-[10px] text-gray-400 font-bold block mb-4">
+            <span className="text-[10px] font-bold block mb-4" style={{ color: "#475569" }}>
               {isRtl ? "مؤشرات الثبات والاستمرارية لقنوات الضخ" : "Operations status overview metric"}
             </span>
           </div>
@@ -544,10 +553,10 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
                 <Tooltip 
                   formatter={(value: any) => [`${value} ${isRtl ? "سجلات" : "items"}`]}
                   contentStyle={{
-                    backgroundColor: isDark ? "#1E293B" : "#F4F4F5",
-                    borderColor: isDark ? "#334155" : "#E4E4E7",
+                    backgroundColor: "#1E293B",
+                    borderColor: "#334155",
                     borderRadius: "8px",
-                    color: isDark ? "#F8FAFC" : "#0F172A",
+                    color: "#FFFFFF",
                     fontSize: "11px",
                     fontWeight: "bold"
                   }}
@@ -557,21 +566,24 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
             
             {/* Center label inside clean doughnut hole */}
             <div className="absolute inset-0 flex flex-col justify-center items-center pointer-events-none">
-              <span className="text-xl font-black text-indigo-500">
+              <span className="text-xl font-black" style={{ color: "#0F172A" }}>
                 {mainStatsDistribution.reduce((acc: number, cur: any) => acc + (cur.value || 0), 0)}
               </span>
-              <span className="text-[9px] text-gray-400 font-extrabold uppercase">
+              <span className="text-[9px] font-extrabold uppercase" style={{ color: "#475569" }}>
                 {isRtl ? "عنصر مراقب" : "Sectors"}
               </span>
             </div>
           </div>
 
           {/* Map legend labels */}
-          <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex flex-wrap gap-x-4 gap-y-2 justify-center">
+          <div className="mt-4 pt-3 border-t border-gray-150 dark:border-gray-800 flex flex-wrap gap-x-4 gap-y-2 justify-center">
             {mainStatsDistribution.map((entry: any, i: number) => (
               <div key={i} className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
-                <span className="text-[10px] font-bold text-gray-500 dark:text-gray-300">
+                <span 
+                  style={{ color: "#475569" }}
+                  className="text-[10px] font-bold"
+                >
                   {isRtl ? entry.label_ar : entry.label_en} ({entry.value})
                 </span>
               </div>
@@ -582,11 +594,11 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
         {/* Bar Chart: Efficiency indicators details */}
         <div style={{ backgroundColor: "#E8E8E8" }} className="lg:col-span-8 p-5 rounded-2xl border border-gray-150 dark:border-gray-800 shadow-xs flex flex-col justify-between">
           <div>
-            <h3 className="text-xs font-black text-gray-900 dark:text-white mb-1 tracking-tight flex items-center gap-2">
+            <h3 style={{ color: "#0F172A" }} className="text-xs font-black mb-1 tracking-tight flex items-center gap-2">
               <span className="w-1.5 h-3 rounded-full bg-emerald-555" />
               {t.systemBreakdownTitle}
             </h3>
-            <span className="text-[10px] text-gray-400 font-bold block mb-4">
+            <span className="text-[10px] font-bold block mb-4" style={{ color: "#475569" }}>
               {isRtl ? "مؤشر دقة التجاوب للقطاعات والخطوط الأساسية وفقاً لـ AVEVA" : "Precision tracking indicators for major channels"}
             </span>
           </div>
@@ -594,25 +606,25 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
           <div className="h-44 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={secondaryStatsChart} margin={{ top: 10, right: 10, left: -25, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#334155" : "#E4E4E5"} opacity={0.3} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" opacity={0.3} />
                 <XAxis 
                   dataKey="name" 
-                  tick={{ fill: isDark ? "#94A3B8" : "#64748B", fontSize: 10, fontWeight: "bold" }}
+                  tick={{ fill: "#334155", fontSize: 10, fontWeight: "bold" }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <YAxis 
-                  tick={{ fill: isDark ? "#94A3B8" : "#64748B", fontSize: 10, fontWeight: "bold" }}
+                  tick={{ fill: "#334155", fontSize: 10, fontWeight: "bold" }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <Tooltip
                   formatter={(value: any) => [`${value}%`]}
                   contentStyle={{
-                    backgroundColor: isDark ? "#1E293B" : "#F4F4F5",
-                    borderColor: isDark ? "#334155" : "#E4E4E7",
+                    backgroundColor: "#1E293B",
+                    borderColor: "#334155",
                     borderRadius: "8px",
-                    color: isDark ? "#F8FAFC" : "#0F172A",
+                    color: "#FFFFFF",
                     fontSize: "11px",
                     fontWeight: "bold"
                   }}
@@ -628,14 +640,14 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
           </div>
 
           {/* Quick labels color mapping description */}
-          <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex justify-center gap-6">
+          <div style={{ color: "#475569" }} className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex justify-center gap-6">
             <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400">
               <span className="w-2.5 h-1.5 rounded-sm bg-emerald-500" />
-              <span>{isRtl ? "مستقر (>90%)" : "Stable (>90%)"}</span>
+              <span style={{ color: "#475569" }}>{isRtl ? "مستقر (>90%)" : "Stable (>90%)"}</span>
             </div>
             <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400">
               <span className="w-2.5 h-1.5 rounded-sm bg-amber-500" />
-              <span>{isRtl ? "متوسط (50%-90%)" : "Moderate (50%-90%)"}</span>
+              <span style={{ color: "#475569" }}>{isRtl ? "متوسط (50%-90%)" : "Moderate (50%-90%)"}</span>
             </div>
             <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400">
               <span className="w-2.5 h-1.5 rounded-sm bg-rose-500" />
@@ -691,9 +703,9 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
               {t.noRecords}
             </div>
           ) : (
-            <table className="w-full text-start border-collapse">
+            <table className="w-full text-start border-collapse" style={{ borderColor: "#CBD5E1" }}>
               <thead>
-                <tr className="bg-gray-50/70 dark:bg-slate-950 border-b border-gray-100 dark:border-gray-800">
+                <tr className="border-b" style={{ backgroundColor: "#F8FAFC", borderBottomColor: "#CBD5E1" }}>
                   {dynamicColumns.map((col, idx) => {
                     const isSorted = sortField === col;
                     // Format human readable headers
@@ -702,31 +714,34 @@ export function PageHome({ data, fullData, lang, theme, viewMode }: PageHomeProp
                       <th
                         key={idx}
                         onClick={() => handleSort(col)}
-                        className={`p-3.5 text-[11px] font-extrabold text-gray-450 uppercase tracking-wider cursor-pointer select-none text-start hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors ${
+                        style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}
+                        className={`p-3.5 text-[11px] font-extrabold uppercase tracking-wider cursor-pointer select-none text-start hover:text-indigo-600 transition-colors ${
                           idx === 0 ? (isRtl ? "pr-6" : "pl-6") : ""
                         }`}
                       >
                         <div className="flex items-center gap-1">
                           <span>{readableHeader}</span>
-                          <ArrowUpDown className={`w-3 h-3 transition-opacity ${isSorted ? "opacity-100 text-indigo-550" : "opacity-35"}`} />
+                          <ArrowUpDown className={`w-3 h-3 transition-opacity ${isSorted ? "opacity-100 text-indigo-600" : "opacity-35"}`} />
                         </div>
                       </th>
                     );
                   })}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <tbody className="divide-y" style={{ borderColor: "#CBD5E1" }}>
                 {sortedRows.map((row: any, rIdx: number) => {
                   return (
                     <tr 
                       key={row.id || rIdx}
-                      className="hover:bg-slate-50/50 dark:hover:bg-slate-800/15 transition-all text-start"
+                      className="hover:bg-slate-50/50 transition-all text-start"
+                      style={{ borderBottom: "1px solid #CBD5E1" }}
                     >
                       {dynamicColumns.map((col, cIdx) => {
                         const cellValue = row[col];
                         return (
                           <td
                             key={cIdx}
+                            style={{ color: "#1E293B" }}
                             className={`p-3 text-xs leading-normal ${
                               cIdx === 0 ? (isRtl ? "pr-6 font-bold" : "pl-6 font-bold") : ""
                             }`}

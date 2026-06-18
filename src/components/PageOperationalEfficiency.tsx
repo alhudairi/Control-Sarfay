@@ -248,7 +248,6 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
       [t.colNotes]: r.notes
     }));
     const worksheet = XLSX.utils.json_to_sheet(payload);
-    // Add RTL settings to sheet if Arabic
     if (isRtl) {
       worksheet["!views"] = [{ RTL: true }];
     }
@@ -287,22 +286,22 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
   };
 
   return (
-    <div className="space-y-6">
+    <div style={{ backgroundColor: "#FFFFFF" }} className="space-y-6 p-6 min-h-screen text-[#1E293B]">
       {/* 1. Page Header Info Box */}
-      <div style={{ backgroundColor: "#E8E8E8" }} className="p-4 border border-gray-200 dark:border-gray-800 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs font-semibold">
+      <div style={{ backgroundColor: "#FFFFFF" }} className="p-4 border border-gray-200 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs font-semibold">
         <div className="flex flex-col items-start gap-1">
-          <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider block">
+          <span className="text-[10px] font-bold uppercase tracking-wider block" style={{ color: "#334155" }}>
             {isRtl ? `البيانات الفنية الحالية لكفاءة نظام التشغيل لآخر يوم مسجل (${latestDate || "-"})` : `Operational Efficiency Telemetry for last registered day (${latestDate || "-"})`}
           </span>
-          <h2 className="text-base font-extrabold text-gray-900 dark:text-white leading-none">
+          <h2 className="text-base font-extrabold leading-none" style={{ color: "#0F172A" }}>
             {data.title_ar && lang === "ar" ? data.title_ar : data.title_en || t.title}
           </h2>
         </div>
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-extrabold rounded-lg border border-indigo-100 dark:border-indigo-900/40">
+          <span className="px-3 py-1 font-extrabold rounded-lg border" style={{ backgroundColor: "#DCFCE7", color: "#166534", borderColor: "#BBF7D0" }}>
             {isRtl ? "معدل الكفاءة العام: " : "Global Efficiency: "} {computedSummary.efficiency_rate_percent}%
           </span>
-          <span className="px-3 py-1 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 font-extrabold rounded-lg border border-rose-100 dark:border-rose-900/40">
+          <span className="px-3 py-1 font-extrabold rounded-lg border" style={{ backgroundColor: "#FEE2E2", color: "#991B1B", borderColor: "#FECACA" }}>
             {isRtl ? "نسبة المخاطر: " : "Risk: "} {computedSummary.risk_rate_percent}%
           </span>
         </div>
@@ -321,18 +320,18 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
             isActive={activeKpiFilter === kpi.type}
             onClick={() => handleKpiClick(kpi.type)}
             lang={lang}
-            theme={theme}
+            theme="light"
           />
         ))}
       </div>
 
       {/* 3. Analytics Charts Grid */}
-      <div style={{ backgroundColor: "#E8E8E8" }} className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 rounded-2xl">
+      <div style={{ backgroundColor: "#FFFFFF" }} className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 border border-gray-200 rounded-2xl">
         {/* Chart A: Donut Status Distribution */}
-        <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-200 dark:border-gray-850 p-5 rounded-2xl flex flex-col justify-between">
-          <div className="text-start pb-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
+        <div style={{ backgroundColor: "#FFFFFF" }} className="border border-gray-200 p-5 rounded-2xl flex flex-col justify-between">
+          <div className="text-start pb-4 border-b border-gray-100 flex items-center gap-2">
             <div className="w-1.5 h-6 bg-indigo-600 rounded"></div>
-            <h3 className="text-sm font-extrabold text-gray-900 dark:text-white">
+            <h3 className="text-sm font-extrabold" style={{ color: "#0F172A" }}>
               {t.statusDist}
             </h3>
           </div>
@@ -355,28 +354,34 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
                 <Tooltip 
                   formatter={(val: number) => [val, isRtl ? "مجموع الوحدات" : "Total Units"]}
                   contentStyle={{
-                    backgroundColor: isDark ? "#0F172A" : "#FFFFFF",
-                    borderColor: isDark ? "#1E293B" : "#E2E8F0"
+                    backgroundColor: "#0F172A",
+                    borderColor: "#0F172A",
+                    borderRadius: "8px",
+                    color: "#FFFFFF",
+                    fontSize: "11px",
+                    fontWeight: "bold"
                   }}
+                  itemStyle={{ color: "#FFFFFF" }}
+                  labelStyle={{ color: "#FFFFFF" }}
                 />
               </PieChart>
             </ResponsiveContainer>
             {/* Center Summary Label */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
-              <span className="text-xs text-gray-450 dark:text-gray-500 font-bold tracking-wider">
+              <span className="text-xs font-bold tracking-wider" style={{ color: "#475569" }}>
                 {isRtl ? "إجمالي القطاعات" : "Total Zones"}
               </span>
-              <span className="text-2xl font-black text-gray-900 dark:text-white mt-0.5">
+              <span className="text-2xl font-black mt-0.5" style={{ color: "#0F172A" }}>
                 {computedSummary.total_zones}
               </span>
             </div>
           </div>
           {/* Legend indicators */}
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4 border-t border-gray-100 dark:border-gray-800 text-xs">
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-4 border-t border-gray-100 text-xs">
             {computedChartData.status_distribution.map((entry, idx) => (
               <div key={idx} className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: entry.color }} />
-                <span className="text-gray-650 dark:text-gray-450 font-semibold">
+                <span className="font-semibold" style={{ color: "#334155" }}>
                   {isRtl ? entry.label_ar : entry.label_en}: {entry.value}
                 </span>
               </div>
@@ -385,10 +390,10 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
         </div>
 
         {/* Chart B: Horizontal Bar Chart - Zones Health Scores */}
-        <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-200 dark:border-gray-850 p-5 rounded-2xl flex flex-col justify-between">
-          <div className="text-start pb-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
+        <div style={{ backgroundColor: "#FFFFFF" }} className="border border-gray-200 p-5 rounded-2xl flex flex-col justify-between">
+          <div className="text-start pb-4 border-b border-gray-100 flex items-center gap-2">
             <div className="w-1.5 h-6 bg-indigo-600 rounded"></div>
-            <h3 className="text-sm font-extrabold text-gray-900 dark:text-white">
+            <h3 className="text-sm font-extrabold" style={{ color: "#0F172A" }}>
               {t.healthChart}
             </h3>
           </div>
@@ -399,34 +404,40 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
                 layout="vertical"
                 margin={{ top: 10, right: 15, left: 10, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" horizontal={true} stroke={isDark ? "#1E293B" : "#F1F5F9"} />
-                <XAxis type="number" domain={[0, 100]} stroke="#94A3B8" fontSize={10} />
-                <YAxis dataKey="zone" type="category" stroke="#94A3B8" fontSize={9} width={90} />
+                <CartesianGrid strokeDasharray="3 3" horizontal={true} stroke="#CBD5E1" opacity={0.3} />
+                <XAxis type="number" domain={[0, 100]} stroke="#334155" fontSize={10} tick={{ fill: "#334155", fontWeight: "bold" }} />
+                <YAxis dataKey="zone" type="category" stroke="#334155" fontSize={9} width={90} tick={{ fill: "#334155", fontWeight: "bold" }} />
                 <Tooltip
                   formatter={(val: number) => [`${val}%`, t.healthLabel]}
                   contentStyle={{
-                    backgroundColor: isDark ? "#0F172A" : "#FFFFFF",
-                    borderColor: isDark ? "#1E293B" : "#E2E8F0"
+                    backgroundColor: "#0F172A",
+                    borderColor: "#0F172A",
+                    borderRadius: "8px",
+                    color: "#FFFFFF",
+                    fontSize: "11px",
+                    fontWeight: "bold"
                   }}
+                  itemStyle={{ color: "#FFFFFF" }}
+                  labelStyle={{ color: "#FFFFFF" }}
                 />
                 <Bar dataKey="health_score" radius={[0, 4, 4, 0]}>
-                  {data.chart_data.zones_health.map((entry, index) => (
+                  {computedChartData.zones_health.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color || "#4F46E5"} />
                   ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider text-center pt-2">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-center pt-2" style={{ color: "#475569" }}>
             * {isRtl ? "مؤشر 100 يعني كفاءة واستقرار كامل." : "Score of 100 means high performance."}
           </div>
         </div>
       </div>
 
       {/* 4. Table Controls and List */}
-      <div style={{ backgroundColor: "#E8E8E8" }} className="border border-gray-200 dark:border-gray-850 rounded-2xl overflow-hidden shadow-xs">
+      <div style={{ backgroundColor: "#FFFFFF" }} className="border border-gray-200 rounded-2xl overflow-hidden shadow-xs">
         {/* Table Header Filter controls */}
-        <div style={{ backgroundColor: "#E8E8E8" }} className="p-5 border-b border-gray-100 dark:border-gray-800 flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
+        <div style={{ backgroundColor: "#FFFFFF" }} className="p-5 border-b border-gray-200 flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
           <div className="flex flex-wrap items-center gap-3 flex-1">
             {/* Search Input */}
             <div className="relative flex-1 min-w-[200px] max-w-sm">
@@ -436,8 +447,8 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
                 placeholder={t.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ backgroundColor: "#f9fafb" }}
-                className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 border border-gray-200 dark:border-gray-800 rounded-lg text-xs font-semibold focus:outline-none focus:border-indigo-500 text-gray-850 dark:text-gray-900 placeholder-gray-450 dark:placeholder-gray-550 transition-colors"
+                style={{ backgroundColor: "#FFFFFF", color: "#1E293B", borderColor: "#CBD5E1" }}
+                className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 border rounded-lg text-xs font-semibold focus:outline-none focus:border-indigo-500 placeholder-[#64748B] transition-colors"
               />
             </div>
 
@@ -445,8 +456,8 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              style={{ backgroundColor: "#f9fafb" }}
-              className="px-3 py-1.5 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-800 transition-colors"
+              style={{ backgroundColor: "#FFFFFF", color: "#1E293B", borderColor: "#CBD5E1" }}
+              className="px-3 py-1.5 border text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer transition-colors"
             >
               <option value="all">{t.allStatuses}</option>
               {uniqueStatuses.map((st, i) => (
@@ -460,8 +471,8 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
             <select
               value={selectedZone}
               onChange={(e) => setSelectedZone(e.target.value)}
-              style={{ backgroundColor: "#f9fafb" }}
-              className="px-3 py-1.5 border border-gray-200 dark:border-gray-800 text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer text-gray-800 transition-colors"
+              style={{ backgroundColor: "#FFFFFF", color: "#1E293B", borderColor: "#CBD5E1" }}
+              className="px-3 py-1.5 border text-xs font-semibold rounded-lg focus:outline-none focus:border-indigo-500 cursor-pointer transition-colors"
             >
               <option value="all">{t.allZones}</option>
               {uniqueZones.map((z, i) => (
@@ -473,7 +484,8 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
             {activeKpiFilter && (
               <button
                 onClick={() => setActiveKpiFilter(null)}
-                className="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950 text-indigo-650 dark:text-indigo-350 text-[10px] font-bold rounded-md hover:bg-indigo-100 transition-colors cursor-pointer"
+                style={{ backgroundColor: "#F1F5F9", color: "#1E293B" }}
+                className="px-2.5 py-1 text-[10px] font-bold rounded-md hover:bg-slate-200 transition-colors cursor-pointer"
               >
                 {isRtl ? "مسح فلتر البطاقات" : "Clear card filter"}
               </button>
@@ -482,8 +494,8 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
 
           {/* Export Actions */}
           <div className="flex items-center gap-2 self-start lg:self-auto shrink-0">
-            <span className="text-[11px] font-bold text-gray-450 px-2">
-              {t.totalCount} <strong className="text-indigo-650 dark:text-indigo-400 font-mono text-xs">{sortedRows.length}</strong>
+            <span className="text-[11px] font-bold px-2" style={{ color: "#475569" }}>
+              {t.totalCount} <strong className="font-mono text-xs" style={{ color: "#0F172A" }}>{sortedRows.length}</strong>
             </span>
             <button
               onClick={handleExportExcel}
@@ -506,81 +518,98 @@ export function PageOperationalEfficiency({ data, lang, theme, viewMode }: PageP
 
         {/* Scrollable table container */}
         <div className="overflow-x-auto overflow-y-auto max-h-[480px]">
-          <table className="w-full border-collapse text-center text-xs min-w-[700px]">
-            <thead className="sticky top-0 bg-gray-50 dark:bg-gray-950 text-gray-550 dark:text-gray-400 font-black border-b border-gray-100 dark:border-gray-800 z-10 select-none">
+          <table className="w-full border-collapse text-center text-xs min-w-[700px]" style={{ borderColor: "#CBD5E1" }}>
+            <thead className="sticky top-0 sticky-header text-gray-450 dark:text-gray-400 font-black border-b z-10 select-none" style={{ backgroundColor: "#F8FAFC", borderBottomColor: "#CBD5E1" }}>
               <tr>
-                <th onClick={() => handleSort("date")} className="p-4 text-center hover:text-indigo-650 cursor-pointer">
+                <th onClick={() => handleSort("date")} className="p-4 text-center hover:text-indigo-650 cursor-pointer" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>
                   <div className="flex items-center justify-center gap-1">
                     {t.colDate} <ArrowUpDown className="w-3 h-3 shrink-0" />
                   </div>
                 </th>
-                <th className="p-4 text-center">{t.colDay}</th>
-                <th onClick={() => handleSort("zone")} className="p-4 text-center hover:text-indigo-650 cursor-pointer">
+                <th className="p-4 text-center" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colDay}</th>
+                <th onClick={() => handleSort("zone")} className="p-4 text-center hover:text-indigo-650 cursor-pointer" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>
                   <div className="flex items-center justify-center gap-1">
                     {t.colZone} <ArrowUpDown className="w-3 h-3 shrink-0" />
                   </div>
                 </th>
-                <th onClick={() => handleSort("status")} className="p-4 text-center hover:text-indigo-650 cursor-pointer">
+                <th onClick={() => handleSort("status")} className="p-4 text-center hover:text-indigo-650 cursor-pointer" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>
                   <div className="flex items-center justify-center gap-1">
                     {t.colStatus} <ArrowUpDown className="w-3 h-3 shrink-0" />
                   </div>
                 </th>
-                <th onClick={() => handleSort("health")} className="p-4 text-center hover:text-indigo-650 cursor-pointer">
+                <th onClick={() => handleSort("health")} className="p-4 text-center hover:text-indigo-650 cursor-pointer" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>
                   <div className="flex items-center justify-center gap-1">
                     {t.colHealth} <ArrowUpDown className="w-3 h-3 shrink-0" />
                   </div>
                 </th>
-                <th className="p-4 text-center max-w-sm">{t.colNotes}</th>
+                <th className="p-4 text-center max-w-sm" style={{ color: "#0F172A", borderBottom: "1px solid #CBD5E1" }}>{t.colNotes}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-150 dark:divide-gray-850 font-medium whitespace-nowrap">
+            <tbody className="divide-y font-medium whitespace-nowrap" style={{ borderColor: "#CBD5E1" }}>
               {sortedRows.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-400 font-bold">
+                  <td colSpan={6} className="p-8 text-center text-gray-400 font-bold" style={{ color: "#475569" }}>
                     {t.noRecords}
                   </td>
                 </tr>
               ) : (
-                sortedRows.map((row) => (
-                  <tr 
-                    key={row.id} 
-                    className="hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors"
-                  >
-                    <td className="p-4 text-center font-mono font-semibold text-slate-500 dark:text-slate-400">{row.date}</td>
-                    <td className="p-4 text-center text-slate-500 dark:text-slate-400">{row.day_ar}</td>
-                    <td className="p-4 text-center font-bold text-gray-900 dark:text-white">
-                      <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800/70">{row.zone}</span>
-                    </td>
-                    <td className="p-4 text-center">
-                      <span 
-                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black mx-auto"
-                        style={{ backgroundColor: `${row.color}15`, color: row.color }}
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: row.color }} />
-                        {isRtl ? row.status_ar : row.status_en}
-                      </span>
-                    </td>
-                    <td className="p-4 text-center">
-                      <div className="flex items-center justify-center gap-2">
-                        <div className="w-12 bg-gray-200 dark:bg-gray-800 h-1.5 rounded-full overflow-hidden shrink-0">
-                          <div 
-                            className="h-full rounded-full" 
-                            style={{ 
-                              width: `${row.health_score}%`,
-                              backgroundColor: row.color
-                            }}
-                          />
-                        </div>
-                        <span className="font-mono text-xs font-extrabold" style={{ color: row.color }}>
-                          {row.health_score}%
+                sortedRows.map((row, rIdx) => {
+                  const normStatus = getStatusNormalized(row);
+                  let badgeBg = "#DCFCE7";
+                  let badgeText = "#166534";
+                  if (normStatus === "fluctuating") {
+                    badgeBg = "#FEF3C7";
+                    badgeText = "#92400E";
+                  } else if (normStatus === "out_of_service") {
+                    badgeBg = "#FEE2E2";
+                    badgeText = "#991B1B";
+                  } else if (normStatus === "unknown") {
+                    badgeBg = "#F1F5F9";
+                    badgeText = "#475569";
+                  }
+
+                  return (
+                    <tr 
+                      key={row.id || rIdx} 
+                      className="hover:bg-slate-50/50 transition-colors"
+                      style={{ borderBottom: "1px solid #CBD5E1" }}
+                    >
+                      <td className="p-4 text-center font-mono font-semibold" style={{ color: "#1E293B" }}>{row.date}</td>
+                      <td className="p-4 text-center" style={{ color: "#1E293B" }}>{row.day_ar}</td>
+                      <td className="p-4 text-center font-bold" style={{ color: "#1E293B" }}>
+                        <span className="px-2 py-0.5 rounded" style={{ backgroundColor: "#F1F5F9", color: "#1E293B" }}>{row.zone}</span>
+                      </td>
+                      <td className="p-4 text-center">
+                        <span 
+                          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black mx-auto"
+                          style={{ backgroundColor: badgeBg, color: badgeText }}
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: badgeText }} />
+                          {isRtl ? row.status_ar : row.status_en}
                         </span>
-                      </div>
-                    </td>
-                    <td className="p-4 text-center text-xs text-gray-500 dark:text-gray-400 max-w-sm font-medium leading-relaxed truncate hover:text-clip hover:whitespace-normal">
-                      {row.notes}
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                      <td className="p-4 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          <div className="w-12 bg-gray-200 h-1.5 rounded-full overflow-hidden shrink-0">
+                            <div 
+                              className="h-full rounded-full" 
+                              style={{ 
+                                width: `${row.health_score}%`,
+                                backgroundColor: badgeText
+                              }}
+                            />
+                          </div>
+                          <span className="font-mono text-xs font-extrabold" style={{ color: badgeText }}>
+                            {row.health_score}%
+                          </span>
+                        </div>
+                      </td>
+                      <td className="p-4 text-center text-xs max-w-sm font-medium leading-relaxed truncate hover:text-clip hover:whitespace-normal" style={{ color: "#475569" }}>
+                        {row.notes}
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
