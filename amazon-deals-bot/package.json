@@ -1,0 +1,14 @@
+{
+  "name": "amazon-deals-bot",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Telegram bot that posts Amazon.sa deals with your affiliate tag",
+  "type": "module",
+  "engines": {
+    "node": ">=20.6"
+  },
+  "scripts": {
+    "start": "node --env-file=.env src/index.js",
+    "test": "node --test test/*.test.js"
+  }
+}
