@@ -14,7 +14,7 @@ export function parsePrice(text) {
 }
 
 // Caption format sent by the admin with the product photo:
-//   line 1: Amazon link (or ASIN)
+//   line 1: product link (Amazon link/ASIN, or a store's affiliate link)
 //   line 2: product title
 //   line 3: price before discount
 //   line 4: price after discount
@@ -51,7 +51,7 @@ function escapeHtml(text) {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-export function buildPost({ title, oldPrice, newPrice, note, url, disclosure }) {
+export function buildPost({ title, oldPrice, newPrice, note, url, storeName, disclosure }) {
   const percent = discountPercent(oldPrice, newPrice);
   const saved = oldPrice - newPrice;
   const lines = [
@@ -64,7 +64,9 @@ export function buildPost({ title, oldPrice, newPrice, note, url, disclosure }) 
     `💰 توفّر: ${formatAmount(saved)} ر.س`,
   ];
   if (note) lines.push('', `📌 ${escapeHtml(note)}`);
-  lines.push('', `🛒 <a href="${url}">اطلبه من أمازون</a>`);
+  const cta = storeName ? `اطلبه من ${storeName}` : 'اطلبه الآن';
+  if (storeName) lines.splice(3, 0, `🏬 المتجر: ${storeName}`);
+  lines.push('', `🛒 <a href="${escapeHtml(url).replace(/"/g, '&quot;')}">${cta}</a>`);
   if (disclosure) lines.push('', `<i>${escapeHtml(disclosure)}</i>`);
   return lines.join('\n');
 }

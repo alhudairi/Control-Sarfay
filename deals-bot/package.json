@@ -1,8 +1,8 @@
 {
-  "name": "amazon-deals-bot",
+  "name": "deals-bot",
   "private": true,
   "version": "1.0.0",
-  "description": "Telegram bot that posts Amazon.sa deals with your affiliate tag",
+  "description": "Telegram bot that posts store deals (Amazon, Noon, Temu, ...) with affiliate links",
   "type": "module",
   "engines": {
     "node": ">=20.6"

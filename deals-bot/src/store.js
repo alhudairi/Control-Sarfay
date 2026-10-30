@@ -1,7 +1,8 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-// Remembers which ASINs were already posted so the channel doesn't get duplicates.
+// Remembers which products were already posted so the channel doesn't get duplicates.
+// Keys look like "amazon:B0BXYZ1234" or "noon:www.noon.com/saudi-ar/...".
 export class PostedStore {
   constructor(file) {
     this.file = file;
@@ -16,12 +17,12 @@ export class PostedStore {
     }
   }
 
-  lastPosted(asin) {
-    return this.posted[asin] ?? null;
+  lastPosted(key) {
+    return this.posted[key] ?? null;
   }
 
-  async markPosted(asin, price) {
-    this.posted[asin] = { price, at: new Date().toISOString() };
+  async markPosted(key, price) {
+    this.posted[key] = { price, at: new Date().toISOString() };
     await mkdir(path.dirname(this.file), { recursive: true });
     await writeFile(this.file, JSON.stringify(this.posted, null, 2));
   }

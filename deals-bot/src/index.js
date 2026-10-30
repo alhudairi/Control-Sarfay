@@ -1,14 +1,16 @@
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { affiliateLink, extractAsin, isShortLink, resolveShortLink } from './amazon.js';
 import { buildPost, parseDealCaption } from './format.js';
 import { PostedStore } from './store.js';
+import { resolveDealLink } from './stores.js';
 import { Telegram } from './telegram.js';
 
 const HELP = `أرسل <b>صورة المنتج</b> ومعها وصف بهذا الترتيب (كل معلومة في سطر):
 
-1️⃣ رابط المنتج من أمازون
+1️⃣ رابط المنتج
+   • أمازون: أي رابط للمنتج، والبوت يضيف كود العمولة
+   • نون، تيمو وغيرها: رابط العمولة من لوحة المتجر
 2️⃣ اسم المنتج
 3️⃣ السعر قبل الخصم
 4️⃣ السعر بعد الخصم
@@ -21,7 +23,7 @@ const HELP = `أرسل <b>صورة المنتج</b> ومعها وصف بهذا �
 999
 العرض لمدة محدودة</code>
 
-بجهّز لك المنشور برابط العمولة، وأعرضه عليك قبل النشر.`;
+بجهّز لك المنشور، وأعرضه عليك قبل النشر.`;
 
 function requireEnv(name) {
   const value = process.env[name]?.trim();
@@ -36,7 +38,7 @@ const config = {
   token: requireEnv('TELEGRAM_BOT_TOKEN'),
   channelId: requireEnv('TELEGRAM_CHANNEL_ID'),
   adminIds: new Set(requireEnv('ADMIN_USER_IDS').split(',').map((id) => id.trim())),
-  tag: requireEnv('AMAZON_TAG'),
+  tag: process.env.AMAZON_TAG?.trim() ?? '',
   domain: process.env.AMAZON_DOMAIN?.trim() || 'www.amazon.sa',
   disclosure: process.env.DISCLOSURE?.trim() ?? '',
 };
@@ -54,27 +56,23 @@ async function handleDeal(msg) {
     return;
   }
 
-  let link = parsed.link;
-  if (isShortLink(link)) {
-    try {
-      link = await resolveShortLink(link);
-    } catch (err) {
-      console.error('Short link resolve failed:', err.message);
-    }
-  }
-  const asin = extractAsin(link);
-  if (!asin) {
-    await tg.sendMessage(chatId, '⚠️ ما لقيت رقم المنتج (ASIN) في الرابط. انسخ رابط صفحة المنتج كامل من أمازون.');
+  const deal = await resolveDealLink(parsed.link, config);
+  if (deal.error) {
+    await tg.sendMessage(chatId, `⚠️ ${deal.error}`);
     return;
   }
 
-  const url = affiliateLink(asin, config);
-  const caption = buildPost({ ...parsed, url, disclosure: config.disclosure });
+  const caption = buildPost({
+    ...parsed,
+    url: deal.url,
+    storeName: deal.store.name,
+    disclosure: config.disclosure,
+  });
   const photo = msg.photo.at(-1).file_id;
   const key = randomUUID().slice(0, 8);
-  pending.set(key, { asin, photo, caption, price: parsed.newPrice });
+  pending.set(key, { dealKey: deal.key, photo, caption, price: parsed.newPrice });
 
-  const previous = store.lastPosted(asin);
+  const previous = store.lastPosted(deal.key);
   const warning = previous
     ? `\n\n⚠️ <i>هذا المنتج انتشر قبل بسعر ${previous.price} ر.س (${previous.at.slice(0, 10)})</i>`
     : '';
@@ -112,7 +110,7 @@ async function handleCallback(query) {
 
   try {
     await tg.sendPhoto(config.channelId, deal.photo, deal.caption);
-    await store.markPosted(deal.asin, deal.price);
+    await store.markPosted(deal.dealKey, deal.price);
     await tg.answerCallback(query.id, 'تم النشر ✅');
   } catch (err) {
     console.error('Publish failed:', err.message);
